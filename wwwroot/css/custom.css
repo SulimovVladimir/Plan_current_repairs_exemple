@@ -1,0 +1,147 @@
+﻿.table_value {
+    padding: 0px;
+    margin: 0px;
+    width:5%
+}
+
+.table_value_note {
+    padding: 0px;
+    margin: 0px;
+    width: 10%
+}
+
+.AddButton {
+    text-align: right;
+    float:right
+}
+
+.py-6 {
+    padding-top: 1rem !important;
+    padding-bottom: 4.5rem !important
+}
+
+.Dark_Background {
+    background-color: #dcdcdc;
+}
+
+.Darkened_Background {
+    background-color: #f1f1f1;
+}
+
+.Font_Title{
+    font-weight:700;
+    background-color: #b5b5b5;
+}
+
+#background_dark {
+    background-color: #b5b5b5;
+}
+
+#block {
+    background-color: #ebeced;
+}
+
+
+.form-info {
+    display: block;
+    width: 100%;
+    padding: .5rem 1rem;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #212529;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .5rem;
+}
+
+.div-info {
+  margin-bottom:-15px;
+}
+
+.group-head {
+    font-weight: 500;
+    background-color: #cfcfcf;
+}
+
+.width_30{
+    width: 35%;
+}
+
+.width_10 {
+    width: 10%;
+}
+
+.width_15{
+    width:15%;
+}
+
+.width_20 {
+    width: 20%;
+}
+
+.autoGrow {
+    resize: none;
+    overflow: hidden;
+    height: auto;
+}
+
+.tab {
+    float:left;
+    border: 1px solid #ccc;
+    background-color:#f1f1f1;
+    width:20%;
+    min-width:130px;
+    height:100%;
+}
+
+.tab button {
+    display:block;
+    background-color:inherit;
+    color:black;
+    padding:15px 16px;
+    width:100%;
+    border:none;
+    outline:none;
+    text-align:left;
+    cursor:pointer;
+    transition:0.3s;
+    font-size:17px;
+}
+
+    .tab button.active {
+        background-color: #ccc;
+    }
+
+.tabcontent {
+    float: left;
+    padding: 0px 12px;
+    border: 1px solid #ccc;
+    width: 80%;
+    border-left: none;
+    height: 100%;
+}
+
+.sector {
+}
+
+#topBtn {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 40px; /* Place the button at the bottom of the page */
+    right: 30px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
+    border: none; /* Remove borders */
+    outline: none; /* Remove outline */
+    background-color: red; /* Set a background color */
+    color: white; /* Text color */
+    cursor: pointer; /* Add a mouse pointer on hover */
+    padding: 10px; /* Some padding */
+    border-radius: 10px; /* Rounded corners */
+    font-size: 18px; /* Increase font size */
+}
+
+    #topBtn:hover {
+        background-color: #555; /* Add a dark-grey background on hover */
+    }
+
+

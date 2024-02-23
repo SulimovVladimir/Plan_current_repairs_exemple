@@ -1,0 +1,688 @@
+﻿@using System.Linq;
+@using Plan_current_repairs.Data.VIewModels;
+@model IEnumerable<IGrouping<Plan_current_repairs.Data.Models.GroupNameOfWorks, Plan_current_repairs.Data.VIewModels.RecordsByJornal>>
+
+@{
+    ViewBag.Title = "Просмотр плана-отчета подразделения";
+    Layout = "_Layout";
+}
+
+<div>@await Html.PartialAsync("_headerJornalDepartment", new string[] { ViewBag.Menu[0], ViewBag.Menu[1], ViewBag.Menu[2], ViewBag.Menu[3], ViewBag.Menu[4], ViewBag.settings[0], ViewBag.settings[1] })</div>
+
+
+<div class="d-print-none">
+    @await Component.InvokeAsync("MenuView", new { Section = ViewBag.Menu[0], Block = ViewBag.Menu[1], Group = ViewBag.Menu[2], Year = ViewBag.Menu[3], Department = ViewBag.Menu[4] })
+</div>
+@{ string ShowSpecification(string discription = null, string periodicity = null, string unit = null)
+    {
+        string temp = $"Описание: {discription} \n\nПереодичность: {periodicity}\n\nЕдиница измерения: {unit}";
+        return temp;
+    }
+}
+
+@{ string display_All = (ViewBag.Flags[1]) ? "d-none" : "";
+
+    string display_0 = (ViewBag.Menu[1] == "Весь год") ? "d-none" : "";
+    string display_1 = (ViewBag.Menu[1] != "Весь год" && ViewBag.Menu[1] != "1-й квартал") ? "d-none" : "";
+    string display_2 = (ViewBag.Menu[1] != "Весь год" && ViewBag.Menu[1] != "2-й квартал") ? "d-none" : "";
+    string display_3 = (ViewBag.Menu[1] != "Весь год" && ViewBag.Menu[1] != "3-й квартал") ? "d-none" : "";
+    string display_4 = (ViewBag.Menu[1] != "Весь год" && ViewBag.Menu[1] != "4-й квартал") ? "d-none" : "";
+
+    string display_Fact = (ViewBag.Menu[0] == "План") ? "d-none" : "";
+}
+@{ string ShowNullValue(string value)
+    {
+        if (!ViewBag.Flags[2]) return "";
+        if (value == "0" || value == null) return "bg-danger";
+        return "";
+    }
+}
+
+<div style="overflow:visible; overflow-y:visible">
+    <table class="table table-hover table-sm" style="margin-left: 10px; margin-right: 10px">
+        <thead class="bg-light sticky-top" align="center">
+            @if (ViewBag.Menu[0] == "План")          //загаловок для плана
+            {
+                <tr>
+                    @if (ViewBag.Flags[0]) //развернуть описание
+                    {
+                        <th style="min-width:25vw" valign="middle">Наименование работ</th>
+                        <th>Описание</th>
+                        <th>Переодичность</th>
+                        <th>Ед. измерения</th>
+                    }
+                    else     //свернуть описание
+                    {
+                        <th style="min-width:25vw" valign="middle" title="@ShowSpecification()">Наименование работ</th>
+                    }
+
+                    <th>Год</th>
+                    <th class="@display_1">1-й квартал</th>
+                    <th class="@display_All @display_1">Январь</th>
+                    <th class="@display_All @display_1">Февраль</th>
+                    <th class="@display_All @display_1">Март</th>
+                    <th class="@display_2">2-й квартал</th>
+                    <th class="@display_All @display_2">Апрель</th>
+                    <th class="@display_All @display_2">Май</th>
+                    <th class="@display_All @display_2">Июнь</th>
+                    <th class="@display_3">3-й квартал</th>
+                    <th class="@display_All @display_3">Июль</th>
+                    <th class="@display_All @display_3">Август</th>
+                    <th class="@display_All @display_3">Сентябрь</th>
+                    <th class="@display_4">4-й квартал</th>
+                    <th class="@display_All @display_4">Октябрь</th>
+                    <th class="@display_All @display_4">Ноябрь</th>
+                    <th class="@display_All @display_4">Декабрь</th>
+
+                </tr>
+            }
+            else            //заголовок для отчета
+            {
+                <tr valign="middle">
+                    @if (ViewBag.Flags[0]) //развернуть описание
+                    {
+                        <th style="min-width:25vw" rowspan="2">Наименование работ</th>
+                        <th rowspan="2">Описание</th>
+                        <th rowspan="2">Переодичность</th>
+                        <th rowspan="2">Ед. измерения</th>
+                    }
+                    else     //свернуть описание
+                    {
+                        <th rowspan="2" style="min-width:25vw" title="@ShowSpecification()">Наименование работ</th>
+                    }
+
+                    <th colspan="2">Год</th>
+                    <th colspan="2" class="@display_1">1-й квартал</th>
+                    <th colspan="2" class="@display_All @display_1">Январь</th>
+                    <th colspan="2" class="@display_All @display_1">Февраль</th>
+                    <th colspan="2" class="@display_All @display_1">Март</th>
+                    <th colspan="2" class="@display_2">2-й квартал</th>
+                    <th colspan="2" class="@display_All @display_2">Апрель</th>
+                    <th colspan="2" class="@display_All @display_2">Май</th>
+                    <th colspan="2" class="@display_All @display_2">Июнь</th>
+                    <th colspan="2" class="@display_3">3-й квартал</th>
+                    <th colspan="2" class="@display_All @display_3">Июль</th>
+                    <th colspan="2" class="@display_All @display_3">Август</th>
+                    <th colspan="2" class="@display_All @display_3">Сентябрь</th>
+                    <th colspan="2" class="@display_4">4-й квартал</th>
+                    <th colspan="2" class="@display_All @display_4">Октябрь</th>
+                    <th colspan="2" class="@display_All @display_4">Ноябрь</th>
+                    <th colspan="2" class="@display_All @display_4">Декабрь</th>
+                    <th rowspan="2" class="@display_All @display_0">Акты</th>
+                </tr>
+
+                <tr>
+
+                    <th>План</th>
+                    <th>Факт</th>
+                    <th class="@display_1">План</th>
+                    <th class="@display_1">Факт</th>
+                    <th class="@display_All @display_1">План</th>
+                    <th class="@display_All @display_1">Факт</th>
+                    <th class="@display_All @display_1">План</th>
+                    <th class="@display_All @display_1">Факт</th>
+                    <th class="@display_All @display_1">План</th>
+                    <th class="@display_All @display_1">Факт</th>
+                    <th class="@display_2">План</th>
+                    <th class="@display_2">Факт</th>
+                    <th class="@display_All @display_2">План</th>
+                    <th class="@display_All @display_2">Факт</th>
+                    <th class="@display_All @display_2">План</th>
+                    <th class="@display_All @display_2">Факт</th>
+                    <th class="@display_All @display_2">План</th>
+                    <th class="@display_All @display_2">Факт</th>
+                    <th class="@display_3">План</th>
+                    <th class="@display_3">Факт</th>
+                    <th class="@display_All @display_3">План</th>
+                    <th class="@display_All @display_3">Факт</th>
+                    <th class="@display_All @display_3">План</th>
+                    <th class="@display_All @display_3">Факт</th>
+                    <th class="@display_All @display_3">План</th>
+                    <th class="@display_All @display_3">Факт</th>
+                    <th class="@display_4">План</th>
+                    <th class="@display_4">Факт</th>
+                    <th class="@display_All @display_4">План</th>
+                    <th class="@display_All @display_4">Факт</th>
+                    <th class="@display_All @display_4">План</th>
+                    <th class="@display_All @display_4">Факт</th>
+                    <th class="@display_All @display_4">План</th>
+                    <th class="@display_All @display_4">Факт</th>
+
+                </tr>
+            }
+        </thead>
+
+        @{foreach (var group in Model)
+            {
+                <tr class="bg-warning"><td colspan="100%"><h4>@group.Key.NameGroup</h4></td></tr>
+
+                var groupName = group.GroupBy(x => x.nameOfWorks.NameOfWork);
+
+                foreach (var onlyName in groupName)
+                {
+                    if (onlyName.ToList()[0].nameOfWorks.TypeRecords == "без участков")
+                    {
+                        @foreach (var record in onlyName)
+                        {
+                            <tr align="center" class="fw-bold">
+
+                                @if (ViewBag.Flags[0]) //развернуть описание
+                                {
+                                    <td align="left" class="w-25" valign="middle">@record.nameOfWorks.NameOfWork</td>
+                                    <td>@record.nameOfWorks.Discription</td>
+                                    <td>@record.nameOfWorks.Periodicity</td>
+                                    <td>@record.nameOfWorks.Unit</td>
+                                }
+                                else     //свернуть описание
+                                {
+                                    <td align="left" class="w-25" valign="middle" title="@ShowSpecification(record.nameOfWorks.Discription, record.nameOfWorks.Periodicity, record.nameOfWorks.Unit)">@record.nameOfWorks.NameOfWork</td>
+                                }
+
+                                <td>@Math.Round(record.PlanArray.Sum(),3)</td>
+                                <td class="@display_Fact">@Math.Round(record.FactArray.Sum(),3)</td>
+                                <td class="@display_1">@Math.Round(record.PlanArray.Take(3).Sum(),3)</td>
+                                <td class="@display_Fact @display_1">@Math.Round(record.FactArray.Take(3).Sum(),3)</td>
+                                <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[0].ToString())">@record.PlanArray[0]</td>
+                                <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[0].ToString())">@record.FactArray[0]</td>
+                                <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[1].ToString())">@record.PlanArray[1]</td>
+                                <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[1].ToString())">@record.FactArray[1]</td>
+                                <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[2].ToString())">@record.PlanArray[2]</td>
+                                <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[2].ToString())">@record.FactArray[2]</td>
+                                <td class="@display_2">@Math.Round(record.PlanArray.Skip(3).Take(3).Sum(),3)</td>
+                                <td class="@display_Fact @display_2 ">@Math.Round(record.FactArray.Skip(3).Take(3).Sum(),3)</td>
+                                <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[3].ToString())">@record.PlanArray[3]</td>
+                                <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[3].ToString())">@record.FactArray[3]</td>
+                                <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[4].ToString())">@record.PlanArray[4]</td>
+                                <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[4].ToString())">@record.FactArray[4]</td>
+                                <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[5].ToString())">@record.PlanArray[5]</td>
+                                <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[5].ToString())">@record.FactArray[5]</td>
+                                <td class="@display_3">@Math.Round(record.PlanArray.Skip(6).Take(3).Sum(),3)</td>
+                                <td class="@display_Fact @display_3">@Math.Round(record.FactArray.Skip(6).Take(3).Sum(),3)</td>
+                                <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[6].ToString())">@record.PlanArray[6]</td>
+                                <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[6].ToString())">@record.FactArray[6]</td>
+                                <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[7].ToString())">@record.PlanArray[7]</td>
+                                <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[7].ToString())">@record.FactArray[7]</td>
+                                <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[8].ToString())">@record.PlanArray[8]</td>
+                                <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[8].ToString())">@record.FactArray[8]</td>
+                                <td class="@display_4">@Math.Round(record.PlanArray.Skip(9).Take(3).Sum(),3)</td>
+                                <td class="@display_Fact @display_4">@Math.Round(record.FactArray.Skip(9).Take(3).Sum(),3)</td>
+                                <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[9].ToString())">@record.PlanArray[9]</td>
+                                <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[9].ToString())">@record.FactArray[9]</td>
+                                <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[10].ToString())">@record.PlanArray[10]</td>
+                                <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[10].ToString())">@record.FactArray[10]</td>
+                                <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[11].ToString())">@record.PlanArray[11]</td>
+                                <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[11].ToString())">@record.FactArray[11]</td>
+                                <td class="@display_Fact @display_All @display_0">
+                                        @{
+                                            foreach (var item in record.jornal.ActOfWorks)
+                                            {
+                                            <a asp-action="ViewCardAct" asp-controller="Act" asp-route-ActID="@item.IDAct" asp-route-IsBanOnEditing="true" class="text-dark text-decoration-none text-nowrap fw-normal bg-light ms-1 mt-1 px-1 border-1 border-secondary border">
+                                                    @item.NumberAct
+                                                </a>
+                                            }
+                                        }
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                    if (onlyName.ToList()[0].nameOfWorks.TypeRecords == "с участками")
+                    {
+                        <tr align="center" class="fw-bold">
+                            @if (ViewBag.Flags[0]) //развернуть описание
+                            {
+                                <td align="left" class="w-25" valign="middle">@onlyName.ToList()[0].nameOfWorks.NameOfWork</td>
+                                <td>@onlyName.ToList()[0].nameOfWorks.Discription</td>
+                                <td>@onlyName.ToList()[0].nameOfWorks.Periodicity</td>
+                                <td>@onlyName.ToList()[0].nameOfWorks.Unit</td>
+                            }
+                            else     //свернуть описание
+                            {
+                                <td align="left" class="w-25" valign="middle" title="@ShowSpecification(onlyName.ToList()[0].nameOfWorks.Discription, onlyName.ToList()[0].nameOfWorks.Periodicity, onlyName.ToList()[0].nameOfWorks.Unit)">@onlyName.ToList()[0].nameOfWorks.NameOfWork</td>
+                            }
+
+                            @if (onlyName.ToList()[0].jornal == null)
+                            {
+                                <td>0</td>
+                                <td class="@display_Fact">0</td>
+                                <td class="@display_1">0</td>
+                                <td class="@display_Fact @display_1">0</td>
+                                <td class="@display_All @display_1">0</td>
+                                <td class="@display_Fact @display_All @display_1">0</td>
+                                <td class="@display_All @display_1">0</td>
+                                <td class="@display_Fact @display_All @display_1">0</td>
+                                <td class="@display_All @display_1">0</td>
+                                <td class="@display_Fact @display_All @display_1">0</td>
+                                <td class="@display_2">0</td>
+                                <td class="@display_Fact @display_2">0</td>
+                                <td class="@display_All @display_2">0</td>
+                                <td class="@display_Fact @display_All @display_2">0</td>
+                                <td class="@display_All @display_2">0</td>
+                                <td class="@display_Fact @display_All @display_2">0</td>
+                                <td class="@display_All @display_2">0</td>
+                                <td class="@display_Fact @display_All @display_2">0</td>
+                                <td class="@display_3">0</td>
+                                <td class="@display_Fact @display_3">0</td>
+                                <td class="@display_All @display_3">0</td>
+                                <td class="@display_Fact @display_All @display_3">0</td>
+                                <td class="@display_All @display_3">0</td>
+                                <td class="@display_Fact @display_All @display_3">0</td>
+                                <td class="@display_All @display_3">0</td>
+                                <td class="@display_Fact @display_All @display_3">0</td>
+                                <td class="@display_4">0</td>
+                                <td class="@display_Fact @display_4">0</td>
+                                <td class="@display_All @display_4">0</td>
+                                <td class="@display_Fact @display_All @display_4">0</td>
+                                <td class="@display_All @display_4">0</td>
+                                <td class="@display_Fact @display_All @display_4">0</td>
+                                <td class="@display_All @display_4">0</td>
+                                <td class="@display_Fact @display_All @display_4">0</td>
+                                <td class="@display_Fact @display_All @display_0"></td>
+                            }
+
+                            else
+                            {
+                                <td>@Math.Round(onlyName.Sum(x => x.PlanArray.Sum()),3)</td>
+                                <td class="@display_Fact">@Math.Round(onlyName.Sum(x => x.FactArray.Sum()),3)</td>
+                                <td class="@display_1">@Math.Round(onlyName.Sum(x => x.PlanArray.Take(3).Sum()),3)</td>
+                                <td class="@display_Fact @display_1">@Math.Round(onlyName.Sum(x => x.FactArray.Take(3).Sum()),3)</td>
+                                <td class="@display_All @display_1">@Math.Round(onlyName.Sum(x => x.PlanArray[0]),3)</td>
+                                <td class="@display_Fact @display_All @display_1">@Math.Round(onlyName.Sum(x => x.FactArray[0]),3)</td>
+                                <td class="@display_All @display_1">@Math.Round(onlyName.Sum(x => x.PlanArray[1]),3)</td>
+                                <td class="@display_Fact @display_All @display_1">@Math.Round(onlyName.Sum(x => x.FactArray[1]),3)</td>
+                                <td class="@display_All @display_1">@Math.Round(onlyName.Sum(x => x.PlanArray[2]),3)</td>
+                                <td class="@display_Fact @display_All @display_1">@Math.Round(onlyName.Sum(x => x.FactArray[2]),3)</td>
+                                <td class="@display_2">@Math.Round(onlyName.Sum(x => x.PlanArray.Skip(3).Take(3).Sum()),3)</td>
+                                <td class="@display_Fact @display_2">@Math.Round(onlyName.Sum(x => x.FactArray.Skip(3).Take(3).Sum()),3)</td>
+                                <td class="@display_All @display_2">@Math.Round(onlyName.Sum(x => x.PlanArray[3]),3)</td>
+                                <td class="@display_Fact @display_All @display_2">@Math.Round(onlyName.Sum(x => x.FactArray[3]),3)</td>
+                                <td class="@display_All @display_2">@Math.Round(onlyName.Sum(x => x.PlanArray[4]),3)</td>
+                                <td class="@display_Fact @display_All @display_2">@Math.Round(onlyName.Sum(x => x.FactArray[4]),3)</td>
+                                <td class="@display_All @display_2">@Math.Round(onlyName.Sum(x => x.PlanArray[5]),3)</td>
+                                <td class="@display_Fact @display_All @display_2">@Math.Round(onlyName.Sum(x => x.FactArray[5]),3)</td>
+                                <td class="@display_3">@Math.Round(onlyName.Sum(x => x.PlanArray.Skip(6).Take(3).Sum()),3)</td>
+                                <td class="@display_Fact @display_3">@Math.Round(onlyName.Sum(x => x.FactArray.Skip(6).Take(3).Sum()),3)</td>
+                                <td class="@display_All @display_3">@Math.Round(onlyName.Sum(x => x.PlanArray[6]),3)</td>
+                                <td class="@display_Fact @display_All @display_3">@Math.Round(onlyName.Sum(x => x.FactArray[6]),3)</td>
+                                <td class="@display_All @display_3">@Math.Round(onlyName.Sum(x => x.PlanArray[7]),3)</td>
+                                <td class="@display_Fact @display_All @display_3">@Math.Round(onlyName.Sum(x => x.FactArray[7]),3)</td>
+                                <td class="@display_All @display_3">@Math.Round(onlyName.Sum(x => x.PlanArray[8]),3)</td>
+                                <td class="@display_Fact @display_All @display_3">@Math.Round(onlyName.Sum(x => x.FactArray[8]),3)</td>
+                                <td class="@display_4">@Math.Round(onlyName.Sum(x => x.PlanArray.Skip(9).Take(3).Sum()),3)</td>
+                                <td class="@display_Fact @display_4">@Math.Round(onlyName.Sum(x => x.FactArray.Skip(9).Take(3).Sum()),3)</td>
+                                <td class="@display_All @display_4">@Math.Round(onlyName.Sum(x => x.PlanArray[9]),3)</td>
+                                <td class="@display_Fact @display_All @display_4">@Math.Round(onlyName.Sum(x => x.FactArray[9]),3)</td>
+                                <td class="@display_All @display_4">@Math.Round(onlyName.Sum(x => x.PlanArray[10]),3)</td>
+                                <td class="@display_Fact @display_All @display_4">@Math.Round(onlyName.Sum(x => x.FactArray[10]),3)</td>
+                                <td class="@display_All @display_4">@Math.Round(onlyName.Sum(x => x.PlanArray[11]),3)</td>
+                                <td class="@display_Fact @display_All @display_4">@Math.Round(onlyName.Sum(x => x.FactArray[11]),3)</td>
+                                <td class="@display_Fact @display_All @display_0"></td>
+                            }
+                        </tr>
+                        @foreach (var record in onlyName)
+                        {
+                            if (record.jornal != null)
+                            {
+                                <tr align="center">
+                                    @if (ViewBag.Flags[0]) //развернуть описание
+                                    {
+                                        <td align="right" class="w-25 @ShowNullValue(record.jornal.Sector)" valign="middle">@record.jornal.Sector</td>
+                                        <td>@record.nameOfWorks.Discription</td>
+                                        <td>@record.nameOfWorks.Periodicity</td>
+                                        <td>@record.nameOfWorks.Unit</td>
+                                    }
+                                    else     //свернуть описание
+                                    {
+                                        <td align="right" class="w-25 @ShowNullValue(record.jornal.Sector)" valign="middle" title="@ShowSpecification(record.nameOfWorks.Discription, record.nameOfWorks.Periodicity, record.nameOfWorks.Unit)">@record.jornal.Sector</td>
+                                    }
+
+
+                                    <td>@Math.Round(record.PlanArray.Sum(),3)</td>
+                                    <td class="@display_Fact">@Math.Round(record.FactArray.Sum(),3)</td>
+                                    <td class="@display_1">@Math.Round(record.PlanArray.Take(3).Sum(),3)</td>
+                                    <td class="@display_Fact @display_1">@Math.Round(record.FactArray.Take(3).Sum(),3)</td>
+                                    <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[0].ToString())">@record.PlanArray[0]</td>
+                                    <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[1].ToString())">@record.FactArray[0]</td>
+                                    <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[1].ToString())">@record.PlanArray[1]</td>
+                                    <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[1].ToString())">@record.FactArray[1]</td>
+                                    <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[2].ToString())">@record.PlanArray[2]</td>
+                                    <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[2].ToString())">@record.FactArray[2]</td>
+                                    <td class="@display_2">@Math.Round(record.PlanArray.Skip(3).Take(3).Sum(),3)</td>
+                                    <td class="@display_Fact @display_2">@Math.Round(record.FactArray.Skip(3).Take(3).Sum(),3)</td>
+                                    <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[3].ToString())">@record.PlanArray[3]</td>
+                                    <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[3].ToString())">@record.FactArray[3]</td>
+                                    <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[4].ToString())">@record.PlanArray[4]</td>
+                                    <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[4].ToString())">@record.FactArray[4]</td>
+                                    <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[5].ToString())">@record.PlanArray[5]</td>
+                                    <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[5].ToString())">@record.FactArray[5]</td>
+                                    <td class="@display_3">@Math.Round(record.PlanArray.Skip(6).Take(3).Sum(),3)</td>
+                                    <td class="@display_Fact @display_3">@Math.Round(record.FactArray.Skip(6).Take(3).Sum(),3)</td>
+                                    <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[6].ToString())">@record.PlanArray[6]</td>
+                                    <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[6].ToString())">@record.FactArray[6]</td>
+                                    <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[7].ToString())">@record.PlanArray[7]</td>
+                                    <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[7].ToString())">@record.FactArray[7]</td>
+                                    <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[8].ToString())">@record.PlanArray[8]</td>
+                                    <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[8].ToString())">@record.FactArray[8]</td>
+                                    <td class="@display_4">@Math.Round(record.PlanArray.Skip(9).Take(3).Sum(),3)</td>
+                                    <td class="@display_Fact @display_4">@Math.Round(record.FactArray.Skip(9).Take(3).Sum(),3)</td>
+                                    <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[9].ToString())">@record.PlanArray[9]</td>
+                                    <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[9].ToString())">@record.FactArray[9]</td>
+                                    <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[10].ToString())">@record.PlanArray[10]</td>
+                                    <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[10].ToString())">@record.FactArray[10]</td>
+                                    <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[11].ToString())">@record.PlanArray[11]</td>
+                                    <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[11].ToString())">@record.FactArray[11]</td>
+                                    <td class="@display_Fact @display_All @display_0">
+                                @{
+                                    foreach (var item in record.jornal.ActOfWorks)
+                                    {
+                                                <a asp-action="ViewCardAct" asp-controller="Act" asp-route-ActID="@item.IDAct" asp-route-IsBanOnEditing="true" class="text-dark text-decoration-none text-nowrap fw-normal bg-light ms-1 mt-1 px-1 border-1 border-secondary border">
+                                            @item.NumberAct
+                                                </a>
+                                    }
+                                }
+                                    </td>
+                                </tr>
+                            }
+
+
+                        }
+
+                    }
+                    if (onlyName.ToList()[0].nameOfWorks.TypeRecords == "с участками и параметрами")
+                    {
+                        <tr align="center" class="fw-bold">
+                            @if (ViewBag.Flags[0]) //развернуть описание
+                            {
+                                <td align="left" class="w-25" valign="middle">@onlyName.ToList()[0].nameOfWorks.NameOfWork</td>
+                                <td>@onlyName.ToList()[0].nameOfWorks.Discription</td>
+                                <td>@onlyName.ToList()[0].nameOfWorks.Periodicity</td>
+                                <td>@onlyName.ToList()[0].nameOfWorks.Unit</td>
+                            }
+                            else     //свернуть описание
+                            {
+                                <td align="left" class="w-25" valign="middle" title="@ShowSpecification(onlyName.ToList()[0].nameOfWorks.Discription, onlyName.ToList()[0].nameOfWorks.Periodicity, onlyName.ToList()[0].nameOfWorks.Unit)">@onlyName.ToList()[0].nameOfWorks.NameOfWork</td>
+                            }
+
+                            @if (onlyName.ToList()[0].jornal == null)
+                            {
+                                <td>0</td>
+                                <td class="@display_1">0</td>
+                                <td class="@display_All @display_1">0</td>
+                                <td class="@display_All @display_1">0</td>
+                                <td class="@display_All @display_1">0</td>
+                                <td class="@display_2">0</td>
+                                <td class="@display_All @display_2">0</td>
+                                <td class="@display_All @display_2">0</td>
+                                <td class="@display_All @display_2">0</td>
+                                <td class="@display_3">0</td>
+                                <td class="@display_All @display_3">0</td>
+                                <td class="@display_All @display_3">0</td>
+                                <td class="@display_All @display_3">0</td>
+                                <td class="@display_4">0</td>
+                                <td class="@display_All @display_4">0</td>
+                                <td class="@display_All @display_4">0</td>
+                                <td class="@display_All @display_4">0</td>
+                                <td class="@display_Fact">0</td>
+                                <td class="@display_Fact @display_1">0</td>
+                                <td class="@display_Fact @display_All @display_1">0</td>
+                                <td class="@display_Fact @display_All @display_1">0</td>
+                                <td class="@display_Fact @display_All @display_1">0</td>
+                                <td class="@display_Fact @display_2">0</td>
+                                <td class="@display_Fact @display_All @display_2">0</td>
+                                <td class="@display_Fact @display_All @display_2">0</td>
+                                <td class="@display_Fact @display_All @display_2">0</td>
+                                <td class="@display_Fact @display_3">0</td>
+                                <td class="@display_Fact @display_All @display_3">0</td>
+                                <td class="@display_Fact @display_All @display_3">0</td>
+                                <td class="@display_Fact @display_All @display_3">0</td>
+                                <td class="@display_Fact @display_4">0</td>
+                                <td class="@display_Fact @display_All @display_4">0</td>
+                                <td class="@display_Fact @display_All @display_4">0</td>
+                                <td class="@display_Fact @display_All @display_4">0</td>
+                                <td class="@display_Fact @display_All @display_0"></td>
+                            }
+
+                            else
+                            {
+                                <td>@Math.Round(onlyName.Sum(x => x.PlanArray.Sum()),3)</td>
+                                <td class="@display_Fact">@Math.Round(onlyName.Sum(x => x.FactArray.Sum()),3)</td>
+                                <td class="@display_1">@Math.Round(onlyName.Sum(x => x.PlanArray.Take(3).Sum()),3)</td>
+                                <td class="@display_Fact @display_1">@Math.Round(onlyName.Sum(x => x.FactArray.Take(3).Sum()),3)</td>
+                                <td class="@display_All @display_1">@Math.Round(onlyName.Sum(x => x.PlanArray[0]),3)</td>
+                                <td class="@display_Fact @display_All @display_1">@Math.Round(onlyName.Sum(x => x.FactArray[0]),3)</td>
+                                <td class="@display_All @display_1">@Math.Round(onlyName.Sum(x => x.PlanArray[1]),3)</td>
+                                <td class="@display_Fact @display_All @display_1">@Math.Round(onlyName.Sum(x => x.FactArray[1]),3)</td>
+                                <td class="@display_All @display_1">@Math.Round(onlyName.Sum(x => x.PlanArray[2]),3)</td>
+                                <td class="@display_Fact @display_All @display_1">@Math.Round(onlyName.Sum(x => x.FactArray[2]),3)</td>
+                                <td class="@display_2">@Math.Round(onlyName.Sum(x => x.PlanArray.Skip(3).Take(3).Sum()),3)</td>
+                                <td class="@display_Fact @display_2">@Math.Round(onlyName.Sum(x => x.FactArray.Skip(3).Take(3).Sum()),3)</td>
+                                <td class="@display_All @display_2">@Math.Round(onlyName.Sum(x => x.PlanArray[3]),3)</td>
+                                <td class="@display_Fact @display_All @display_2">@Math.Round(onlyName.Sum(x => x.FactArray[3]),3)</td>
+                                <td class="@display_All @display_2">@Math.Round(onlyName.Sum(x => x.PlanArray[4]),3)</td>
+                                <td class="@display_Fact @display_All @display_2">@Math.Round(onlyName.Sum(x => x.FactArray[4]),3)</td>
+                                <td class="@display_All @display_2">@Math.Round(onlyName.Sum(x => x.PlanArray[5]),3)</td>
+                                <td class="@display_Fact @display_All @display_2">@Math.Round(onlyName.Sum(x => x.FactArray[5]),3)</td>
+                                <td class="@display_3">@Math.Round(onlyName.Sum(x => x.PlanArray.Skip(6).Take(3).Sum()),3)</td>
+                                <td class="@display_Fact @display_3">@Math.Round(onlyName.Sum(x => x.FactArray.Skip(6).Take(3).Sum()),3)</td>
+                                <td class="@display_All @display_3">@Math.Round(onlyName.Sum(x => x.PlanArray[6]),3)</td>
+                                <td class="@display_Fact @display_All @display_3">@Math.Round(onlyName.Sum(x => x.FactArray[6]),3)</td>
+                                <td class="@display_All @display_3">@Math.Round(onlyName.Sum(x => x.PlanArray[7]),3)</td>
+                                <td class="@display_Fact @display_All @display_3">@Math.Round(onlyName.Sum(x => x.FactArray[7]),3)</td>
+                                <td class="@display_All @display_3">@Math.Round(onlyName.Sum(x => x.PlanArray[8]),3)</td>
+                                <td class="@display_Fact @display_All @display_3">@Math.Round(onlyName.Sum(x => x.FactArray[8]),3)</td>
+                                <td class="@display_4">@Math.Round(onlyName.Sum(x => x.PlanArray.Skip(9).Take(3).Sum()),3)</td>
+                                <td class="@display_Fact @display_4">@Math.Round(onlyName.Sum(x => x.FactArray.Skip(9).Take(3).Sum()),3)</td>
+                                <td class="@display_All @display_4">@Math.Round(onlyName.Sum(x => x.PlanArray[9]),3)</td>
+                                <td class="@display_Fact @display_All @display_4">@Math.Round(onlyName.Sum(x => x.FactArray[9]),3)</td>
+                                <td class="@display_All @display_4">@Math.Round(onlyName.Sum(x => x.PlanArray[10]),3)</td>
+                                <td class="@display_Fact @display_All @display_4">@Math.Round(onlyName.Sum(x => x.FactArray[10]),3)</td>
+                                <td class="@display_All @display_4">@Math.Round(onlyName.Sum(x => x.PlanArray[11]),3)</td>
+                                <td class="@display_Fact @display_All @display_4">@Math.Round(onlyName.Sum(x => x.FactArray[11]),3)</td>
+                                <td class="@display_Fact @display_All @display_0"></td>
+                            }
+                        </tr>
+
+                        if (onlyName.ToList()[0].jornal != null)
+                        {
+                            Dictionary<string, List<List<float[]>>> parameters = new Dictionary<string, List<List<float[]>>>();
+                            if (onlyName.ToList()[0].nameOfWorks.Parameter_1 != null) parameters.Add(onlyName.ToList()[0].nameOfWorks.Parameter_1, new List<List<float[]>> { onlyName.Select(x => x.PlanParameters_1).ToList(), onlyName.Select(x => x.FactParameters_1).ToList() });
+                            if (onlyName.ToList()[0].nameOfWorks.Parameter_2 != null) parameters.Add(onlyName.ToList()[0].nameOfWorks.Parameter_2, new List<List<float[]>> { onlyName.Select(x => x.PlanParameters_2).ToList(), onlyName.Select(x => x.FactParameters_2).ToList() });
+                            if (onlyName.ToList()[0].nameOfWorks.Parameter_3 != null) parameters.Add(onlyName.ToList()[0].nameOfWorks.Parameter_3, new List<List<float[]>> { onlyName.Select(x => x.PlanParameters_3).ToList(), onlyName.Select(x => x.FactParameters_3).ToList() });
+
+
+                            if (parameters != null)
+                            {
+
+                                foreach (var parameter in parameters)
+                                {
+                                    <tr align="center" class="fw-bold">
+                                        @if (ViewBag.Flags[0]) //развернуть описание
+                                        {
+                                            <td align="right" class="w-25" valign="middle">@parameter.Key</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>@onlyName.ToList()[0].nameOfWorks.Unit</td>
+                                        }
+                                        else     //свернуть описание
+                                        {
+                                            <td align="right" class="w-25" valign="middle" title="@ShowSpecification("", "", onlyName.ToList()[0].nameOfWorks.Unit)">@parameter.Key</td>
+                                        }
+                                        <td>@Math.Round(parameter.Value[0].Sum(x => x.Sum()),3)</td>
+                                        <td class="@display_Fact">@Math.Round(parameter.Value[1].Sum(x => x.Sum()),3)</td>
+                                        <td class="@display_1">@Math.Round(parameter.Value[0].Sum(x => x.Take(3).Sum()),3)</td>
+                                        <td class="@display_Fact @display_1">@Math.Round(parameter.Value[1].Sum(x => x.Take(3).Sum()),3)</td>
+                                        <td class="@display_All @display_1">@Math.Round(parameter.Value[0].Sum(x => x[0]),3)</td>
+                                        <td class="@display_Fact @display_All @display_1">@Math.Round(parameter.Value[1].Sum(x => x[0]),3)</td>
+                                        <td class="@display_All @display_1">@Math.Round(parameter.Value[0].Sum(x => x[1]),3)</td>
+                                        <td class="@display_Fact @display_All @display_1">@Math.Round(parameter.Value[1].Sum(x => x[1]),3)</td>
+                                        <td class="@display_All @display_1">@Math.Round(parameter.Value[0].Sum(x => x[2]),3)</td>
+                                        <td class="@display_Fact @display_All @display_1">@Math.Round(parameter.Value[1].Sum(x => x[2]),3)</td>
+                                        <td class="@display_2">@Math.Round(parameter.Value[0].Sum(x => x.Skip(3).Take(3).Sum()),3)</td>
+                                        <td class="@display_Fact @display_2">@Math.Round(parameter.Value[1].Sum(x => x.Skip(3).Take(3).Sum()),3)</td>
+                                        <td class="@display_All @display_2">@Math.Round(parameter.Value[0].Sum(x => x[3]),3)</td>
+                                        <td class="@display_Fact @display_All @display_2">@Math.Round(parameter.Value[1].Sum(x => x[3]),3)</td>
+                                        <td class="@display_All @display_2">@Math.Round(parameter.Value[0].Sum(x => x[4]),3)</td>
+                                        <td class="@display_Fact @display_All @display_2">@Math.Round(parameter.Value[1].Sum(x => x[4]),3)</td>
+                                        <td class="@display_All @display_2">@Math.Round(parameter.Value[0].Sum(x => x[5]),3)</td>
+                                        <td class="@display_Fact @display_All @display_2">@Math.Round(parameter.Value[1].Sum(x => x[5]),3)</td>
+                                        <td class="@display_3">@Math.Round(parameter.Value[0].Sum(x => x.Skip(6).Take(3).Sum()),3)</td>
+                                        <td class="@display_Fact @display_3">@Math.Round(parameter.Value[1].Sum(x => x.Skip(6).Take(3).Sum()),3)</td>
+                                        <td class="@display_All @display_3">@Math.Round(parameter.Value[0].Sum(x => x[6]),3)</td>
+                                        <td class="@display_Fact @display_All @display_3">@Math.Round(parameter.Value[1].Sum(x => x[6]),3)</td>
+                                        <td class="@display_All @display_3">@Math.Round(parameter.Value[0].Sum(x => x[7]),3)</td>
+                                        <td class="@display_Fact @display_All @display_3">@Math.Round(parameter.Value[1].Sum(x => x[7]),3)</td>
+                                        <td class="@display_All @display_3">@Math.Round(parameter.Value[0].Sum(x => x[8]),3)</td>
+                                        <td class="@display_Fact @display_All @display_3">@Math.Round(parameter.Value[1].Sum(x => x[8]),3)</td>
+                                        <td class="@display_4">@Math.Round(parameter.Value[0].Sum(x => x.Skip(9).Take(3).Sum()),3)</td>
+                                        <td class="@display_Fact @display_4">@Math.Round(parameter.Value[1].Sum(x => x.Skip(9).Take(3).Sum()),3)</td>
+                                        <td class="@display_All @display_4">@Math.Round(parameter.Value[0].Sum(x => x[9]),3)</td>
+                                        <td class="@display_Fact @display_All @display_4">@Math.Round(parameter.Value[1].Sum(x => x[9]),3)</td>
+                                        <td class="@display_All @display_4">@Math.Round(parameter.Value[0].Sum(x => x[10]),3)</td>
+                                        <td class="@display_Fact @display_All @display_4">@Math.Round(parameter.Value[1].Sum(x => x[10]),3)</td>
+                                        <td class="@display_All @display_4">@Math.Round(parameter.Value[0].Sum(x => x[11]),3)</td>
+                                        <td class="@display_Fact @display_All @display_4">@Math.Round(parameter.Value[1].Sum(x => x[11]),3)</td>
+                                        <td class="@display_Fact @display_All @display_0"></td>
+                                    </tr>
+                                }
+                            }
+
+                            foreach (var record in onlyName)
+                            {
+                                if (record.jornal != null)
+                                {
+    <tr align="center">
+        @if (ViewBag.Flags[0]) //развернуть описание
+        {
+            <td align="right" class="w-25 @ShowNullValue(record.jornal.Sector)" valign="middle">@record.jornal.Sector</td>
+            <td>@record.nameOfWorks.Discription</td>
+            <td>@record.nameOfWorks.Periodicity</td>
+            <td>@record.nameOfWorks.Unit</td>
+        }
+        else     //свернуть описание
+        {
+            <td align="right" class="w-25 @ShowNullValue(record.jornal.Sector)" valign="middle" title="@ShowSpecification(record.nameOfWorks.Discription, record.nameOfWorks.Periodicity, record.nameOfWorks.Unit)">@record.jornal.Sector</td>
+        }
+
+
+        <td>@Math.Round(record.PlanArray.Sum(),3)</td>
+         <td class="@display_Fact">@Math.Round(record.FactArray.Sum(),3)</td>
+         <td class="@display_1">@Math.Round(record.PlanArray.Take(3).Sum(),3)</td>
+         <td class="@display_Fact @display_1">@Math.Round(record.FactArray.Take(3).Sum(),3)</td>
+        <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[0].ToString())">@record.PlanArray[0]</td>
+        <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[0].ToString())">@record.FactArray[0]</td>
+        <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[1].ToString())">@record.PlanArray[1]</td>
+        <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[1].ToString())">@record.FactArray[1]</td>
+        <td class="@display_All @display_1 @ShowNullValue(record.PlanArray[2].ToString())">@record.PlanArray[2]</td>
+        <td class="@display_Fact @display_All @display_1 @ShowNullValue(record.FactArray[2].ToString())">@record.FactArray[2]</td>
+        <td class="@display_2">@Math.Round(record.PlanArray.Skip(3).Take(3).Sum(),3)</td>
+        <td class="@display_Fact @display_2 ">@Math.Round(record.FactArray.Skip(3).Take(3).Sum(),3)</td>
+        <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[3].ToString())">@record.PlanArray[3]</td>
+        <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[3].ToString())">@record.FactArray[3]</td>
+        <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[4].ToString())">@record.PlanArray[4]</td>
+        <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[4].ToString())">@record.FactArray[4]</td>
+        <td class="@display_All @display_2 @ShowNullValue(record.PlanArray[5].ToString())">@record.PlanArray[5]</td>
+        <td class="@display_Fact @display_All @display_2 @ShowNullValue(record.FactArray[5].ToString())">@record.FactArray[5]</td>
+        <td class="@display_3">@Math.Round(record.PlanArray.Skip(6).Take(3).Sum(),3)</td>
+        <td class="@display_Fact @display_3">@Math.Round(record.FactArray.Skip(6).Take(3).Sum(),3)</td>
+        <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[6].ToString())">@record.PlanArray[6]</td>
+        <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[6].ToString())">@record.FactArray[6]</td>
+        <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[7].ToString())">@record.PlanArray[7]</td>
+        <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[7].ToString())">@record.FactArray[7]</td>
+        <td class="@display_All @display_3 @ShowNullValue(record.PlanArray[8].ToString())">@record.PlanArray[8]</td>
+        <td class="@display_Fact @display_All @display_3 @ShowNullValue(record.FactArray[8].ToString())">@record.FactArray[8]</td>
+        <td class="@display_4">@Math.Round(record.PlanArray.Skip(9).Take(3).Sum(),3)</td>
+        <td class="@display_Fact @display_4">@Math.Round(record.FactArray.Skip(9).Take(3).Sum(),3)</td>
+        <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[9].ToString())">@record.PlanArray[9]</td>
+        <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[9].ToString())">@record.FactArray[9]</td>
+        <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[10].ToString())">@record.PlanArray[10]</td>
+        <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[10].ToString())">@record.FactArray[10]</td>
+        <td class="@display_All @display_4 @ShowNullValue(record.PlanArray[11].ToString())">@record.PlanArray[11]</td>
+        <td class="@display_Fact @display_All @display_4 @ShowNullValue(record.FactArray[11].ToString())">@record.FactArray[11]</td>
+        <td class="@display_Fact @display_All @display_0">
+              @{
+                  foreach (var item in record.jornal.ActOfWorks)
+                  {
+                                                    <a asp-action="ViewCardAct" asp-controller="Act" asp-route-ActID="@item.IDAct" asp-route-IsBanOnEditing="true" class="text-dark text-decoration-none text-nowrap fw-normal bg-light ms-1 mt-1 px-1 border-1 border-secondary border">
+                          @item.NumberAct
+                      </a>
+                  }
+              }
+        </td>
+    </tr>
+
+                                    Dictionary<string, List<float[]>> parametersOnlyRecord = new Dictionary<string, List<float[]>>();
+                                    if (record.nameOfWorks.Parameter_1 != null) parametersOnlyRecord.Add(record.nameOfWorks.Parameter_1, new List<float[]> { record.PlanParameters_1, record.FactParameters_1 });
+                                    if (record.nameOfWorks.Parameter_2 != null) parametersOnlyRecord.Add(record.nameOfWorks.Parameter_2, new List<float[]> { record.PlanParameters_2, record.FactParameters_2 });
+                                    if (record.nameOfWorks.Parameter_3 != null) parametersOnlyRecord.Add(record.nameOfWorks.Parameter_3, new List<float[]> { record.PlanParameters_3, record.FactParameters_3 });
+
+                                    foreach (var parameter in parametersOnlyRecord)
+                                    {
+                                        <tr align="center">
+                                            @if (ViewBag.Flags[0]) //развернуть описание
+                                            {
+                                                <td align="right" class="w-25" valign="middle">@parameter.Key</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>@onlyName.ToList()[0].nameOfWorks.Unit</td>
+                                            }
+                                            else     //свернуть описание
+                                            {
+                                                <td align="right" class="w-25" valign="middle" title="@ShowSpecification("", "", onlyName.ToList()[0].nameOfWorks.Unit)">@parameter.Key</td>
+                                            }
+                                            <td>@Math.Round(parameter.Value[0].Sum(),3)</td>
+                                            <td class="@display_Fact">@Math.Round(parameter.Value[1].Sum(),3)</td>
+                                            <td class="@display_1">@Math.Round(parameter.Value[0].Take(3).Sum(),3)</td>
+                                            <td class="@display_Fact @display_1">@Math.Round(parameter.Value[1].Take(3).Sum(),3)</td>
+                                            <td class="@display_All @display_1 @ShowNullValue(parameter.Value[0][0].ToString())">@parameter.Value[0][0]</td>
+                                            <td class="@display_Fact @display_All @display_1 @ShowNullValue(parameter.Value[1][0].ToString())">@parameter.Value[1][0]</td>
+                                            <td class="@display_All @display_1 @ShowNullValue(parameter.Value[0][1].ToString())">@parameter.Value[0][1]</td>
+                                            <td class="@display_Fact @display_All @display_1 @ShowNullValue(parameter.Value[1][1].ToString())">@parameter.Value[1][1]</td>
+                                            <td class="@display_All @display_1 @ShowNullValue(parameter.Value[0][2].ToString())">@parameter.Value[0][2]</td>
+                                            <td class="@display_Fact @display_All @display_1 @ShowNullValue(parameter.Value[1][2].ToString())">@parameter.Value[1][2]</td>
+                                            <td class="@display_2">@Math.Round(parameter.Value[0].Skip(3).Take(3).Sum(),3)</td>
+                                            <td class="@display_Fact @display_2">@Math.Round(parameter.Value[1].Skip(3).Take(3).Sum(),3)</td>
+                                            <td class="@display_All @display_2 @ShowNullValue(parameter.Value[0][3].ToString())">@parameter.Value[0][3]</td>
+                                            <td class="@display_Fact @display_All @display_2 @ShowNullValue(parameter.Value[1][3].ToString())">@parameter.Value[1][3]</td>
+                                            <td class="@display_All @display_2 @ShowNullValue(parameter.Value[0][4].ToString())">@parameter.Value[0][4]</td>
+                                            <td class="@display_Fact @display_All @display_2 @ShowNullValue(parameter.Value[1][4].ToString())">@parameter.Value[1][4]</td>
+                                            <td class="@display_All @display_2 @ShowNullValue(parameter.Value[0][5].ToString())">@parameter.Value[0][5]</td>
+                                            <td class="@display_Fact @display_All @display_2 @ShowNullValue(parameter.Value[1][5].ToString())">@parameter.Value[1][5]</td>
+                                            <td class="@display_3">@Math.Round(parameter.Value[0].Skip(6).Take(3).Sum(),3)</td>
+                                            <td class="@display_Fact @display_3">@Math.Round(parameter.Value[1].Skip(6).Take(3).Sum(),3)</td>
+                                            <td class="@display_All @display_3 @ShowNullValue(parameter.Value[0][6].ToString())">@parameter.Value[0][6]</td>
+                                            <td class="@display_Fact @display_All @display_3 @ShowNullValue(parameter.Value[1][6].ToString())">@parameter.Value[1][6]</td>
+                                            <td class="@display_All @display_3 @ShowNullValue(parameter.Value[0][7].ToString())">@parameter.Value[0][7]</td>
+                                            <td class="@display_Fact @display_All @display_3 @ShowNullValue(parameter.Value[1][7].ToString())">@parameter.Value[1][7]</td>
+                                            <td class="@display_All @display_3 @ShowNullValue(parameter.Value[0][8].ToString())">@parameter.Value[0][8]</td>
+                                            <td class="@display_Fact @display_All @display_3 @ShowNullValue(parameter.Value[1][8].ToString())">@parameter.Value[1][8]</td>
+                                            <td class="@display_4">@Math.Round(parameter.Value[0].Skip(9).Take(3).Sum(),3)</td>
+                                            <td class="@display_Fact @display_4">@Math.Round(parameter.Value[1].Skip(9).Take(3).Sum(),3)</td>
+                                            <td class="@display_All @display_4 @ShowNullValue(parameter.Value[0][9].ToString())">@parameter.Value[0][9]</td>
+                                            <td class="@display_Fact @display_All @display_4 @ShowNullValue(parameter.Value[1][9].ToString())">@parameter.Value[1][9]</td>
+                                            <td class="@display_All @display_4 @ShowNullValue(parameter.Value[0][10].ToString())">@parameter.Value[0][10]</td>
+                                            <td class="@display_Fact @display_All @display_4 @ShowNullValue(parameter.Value[1][10].ToString())">@parameter.Value[1][10]</td>
+                                            <td class="@display_All @display_4 @ShowNullValue(parameter.Value[0][11].ToString())">@parameter.Value[0][11]</td>
+                                            <td class="@display_Fact @display_All @display_4 @ShowNullValue(parameter.Value[1][11].ToString())">@parameter.Value[1][11]</td>
+                                            <td class="@display_Fact @display_All @display_0"></td>
+                                        </tr>
+
+
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        @if (ViewBag.OtherWork != null)
+        {
+            ViewBag.Display = new string[] {display_All, display_1, display_2, display_3, display_4, display_Fact };
+            IEnumerable<OtherJornalByFact> OtherWork=ViewBag.OtherWork;
+            @await Html.PartialAsync("_ShowOtherWork", OtherWork)
+        }
+
+    </table>
+</div>

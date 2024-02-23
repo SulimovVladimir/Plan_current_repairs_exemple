@@ -1,0 +1,33 @@
+﻿@model Plan_current_repairs.Data.Models.Department
+@{
+    ViewBag.Title = "Добавление подразделения";
+    Layout = "_Layout";
+}
+
+
+
+<form asp-action="CardDepartment" asp-controller="AdminDepartment" style="margin-left: 50px ; margin-right: 50px" >
+         <input type="hidden" asp-for="ID" />
+    <div class="form-group">
+        <label asp-for="NameDepartment" class="control-label">Название филиала</label><br />
+        <input type="text" asp-for="NameDepartment" class="form-control" />
+    <span asp-validation-for="NameDepartment"></span><br />
+    </div>
+    <div class="form-group">
+        <label asp-for="DirectorDepartment" class="control-label">Руководитель филиала</label><br />
+        <input type="text" asp-for="DirectorDepartment" class="form-control" />
+        <span asp-validation-for="DirectorDepartment"></span><br />
+    </div>
+    <div class="form-group">
+        <label asp-for="StandartNumberAct" class="control-label">Номер филиала для актов выполнения</label><br />
+        <input type="text" asp-for="StandartNumberAct" class="form-control" />
+        <span asp-validation-for="StandartNumberAct"></span><br />
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-dark bg-dark text-white" />
+        @if (Model != null && Model.ID != 0)
+        {
+            <a class="btn btn-outline-dark bg-dark text-white" onclick="return ShowWindowConfirm('Удаление филиала приведет к удалению связанных данных в журнале. Продолжить удаление?')" asp-controller="AdminDepartment" asp-action="DeleteDepartment" asp-route-DepartmentID=@Model.ID>Удалить</a>
+        }
+    </div>
+</form>

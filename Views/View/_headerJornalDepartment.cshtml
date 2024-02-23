@@ -1,0 +1,19 @@
+﻿@model string[];
+
+
+<div class="position-relative d-none d-print-block" style="width:100%;height:200px">
+    <div class="position-absolute end-0" >
+        <h6 class="fw-bold text-center">"УТВЕРЖДАЮ"</h6>
+        <p class="text-center">
+            @Model[5] <br />@Model[6]<br />
+        </p>
+        <p class="text-center">"_____"______________@Model[3] г.</p>
+    </div>
+    
+    <div class="position-absolute bottom-0 start-50 translate-middle-x" >
+        @if (Model[0] == "План" || Model[0] == "Сводный план")
+        {<p class="fw-bold text-center">План работ по текущему обслуживанию и ремонту КЛС<br />@Model[4]<br />@Model[3] год</p>}
+            else { <p class="fw-bold text-center">Отчет по плану работ по текущему обслуживанию и ремонту КЛС<br />@Model[4]<br /> @if (Model[1] != "Весь год")
+            {@Model[1]} @Model[3] год</p>}
+    </div>
+</div>

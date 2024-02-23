@@ -1,0 +1,19 @@
+﻿<div class="modal" id="ModalView">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            
+            <div class="modal-body">
+                
+                <button type="button" class="btn-close position-absolute end-0" data-bs-dismiss="modal" aria-label="Закрыть"></button><br />
+                <h5>Какой план-отчет Вы хотели бы просмотреть?</h5>
+            </div>
+
+            <div class="modal-footer">
+
+                <a class="p-1 text-decoration-none bg-dark text-white rounded-3" asp-controller="View" asp-action="IndexViewDepartment" asp-route-master="false">План-отчет подразделения</a>
+                <a class="p-1 text-decoration-none bg-dark text-white rounded-3" asp-controller="View" asp-action="IndexViewMaster" asp-route-master="true">Сводный план-отчет</a>
+
+            </div>
+        </div>
+    </div>
+</div>

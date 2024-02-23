@@ -1,0 +1,48 @@
+﻿@model Plan_current_repairs.Data.VIewModels.DictionaryModel
+@{
+    ViewBag.Title = "Словарь";
+    Layout = "_Layout";
+}
+
+@{
+    if (Context.User.HasClaim("Role", "Admin"))
+    {
+    <form class="w-100 input-group px-3" asp-controller="AdminDictionarySector" asp-action="IndexDictionarySector">
+   
+            <label class="input-group-text">Выберите филиал:</label>
+            <select class="form-control" asp-for="@Model.currentDepartment" asp-items="@Model.allDepartment" name="currentDepartment">
+                 <option>Выберите филиал для просмотра словаря</option>
+            </select>
+            <input type="submit" value="Просмотреть словарь" class="btn-dark btn-outline-dark text-white" />
+    
+    </form>    
+    }
+}
+
+<form class="mt-3" style="margin-left: 20px; margin-right: 20px" asp-action="AddDictionarySector" asp-controller="AdminDictionarySector">
+
+    <input type="hidden" asp-for="@Model.dictionarySector.DepartmentID">
+    @{
+        if (Model.listDictionarySectorsByOnlyDepartment != null)
+        {
+            <table class="table mb-3">
+                <tr class="Font_Title Dark_Background"><td>Участок</td><td>Удалить</td></tr>
+
+                @foreach (var el in Model.listDictionarySectorsByOnlyDepartment)
+                {
+                    <tr class="Dark_Background">
+                        <td>@el.Value</td>
+                        <td>
+                            <input type="submit" value="" class="border-0 bg-transparent" style="width:25px; background-image: url('../img/x-circle-fill.svg'); background-repeat: no-repeat"
+                                   asp-controller="AdminDictionarySector" asp-action="DeleteSector" asp-route-DS="@el.DictionarySectorID" asp-route-currentDepartment="@Model.currentDepartment" /></td>
+                    </tr>
+                }
+            </table>
+            <div class="input-group">
+                <label asp-for="@Model.dictionarySector.Value" class="input-group-text">Введите новый участок</label>
+                <input type="text" asp-for="@Model.dictionarySector.Value" class="form-control" />
+                <input type="submit" value="Добавить" class="btn-dark btn-outline-dark text-white" />
+            </div>
+        }
+    }
+</form>

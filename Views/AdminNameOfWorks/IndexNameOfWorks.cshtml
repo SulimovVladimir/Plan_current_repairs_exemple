@@ -1,0 +1,96 @@
+﻿@model Plan_current_repairs.Data.VIewModels.ForAdminNameOfWorks
+
+@{
+    ViewBag.Title = "Виды работ";
+    Layout = "_Layout";
+}
+
+<form name="My" class="ms-3 me-3">
+    <div class="input-group">
+        <input type="submit" value="Добавить наименование работы" class="btn-dark" asp-controller="AdminNameOfWorks" asp-action="CardNameOfWorks" />
+    </div>
+
+    <table class="table mt-4">
+        <tr class="Font_Title Dark_Background">
+        <td><a asp-action="IndexNameOfWorks" asp-route-sort="@ViewBag.SortNameOfWork">Наименование работы</a></td>
+        <td><a asp-action="IndexNameOfWorks" asp-route-sort="@ViewBag.SortGroup">Категория</a></td>
+        <td>Описание</td>
+        <td>Периодичность</td>
+        <td>Единица измерения</td>
+        <td>Целочисленные данные</td>
+        <td><a asp-action="IndexNameOfWorks" asp-route-sort="@ViewBag.SortActive">Активность</a></td>
+        </tr>
+        @{int number_string = 1; }
+        @foreach (var el in Model.allNameOfWorks)
+        {
+            @if (number_string % 2 == 0)
+            {
+                <tr ondblclick="editRecord(@el.WorkID)" class="Dark_Background">
+                    <td>@el.NameOfWork</td>
+                    <td>@el.GroupName?.NameGroup</td>
+                    <td>@el.Discription</td>
+                    <td>@el.Periodicity</td>
+                    <td>@el.Unit</td>
+                    <td>
+                        @if (el.IntegerValue)
+                        {
+                            <input type="checkbox" class="form-check-input" checked disabled />
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="form-check-input" disabled />
+                        }
+                    </td>
+                    <td>
+                        @if (el.Active)
+                        {
+                            <input type="checkbox" class="form-check-input" checked disabled />
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="form-check-input" disabled />
+                        }
+                    </td>
+                </tr>
+    }
+            else
+            {
+                <tr ondblclick="editRecord(@el.WorkID)">
+                    <td>@el.NameOfWork</td>
+                    <td>@el.GroupName?.NameGroup</td>
+                    <td>@el.Discription</td>
+                    <td>@el.Periodicity</td>
+                    <td>@el.Unit</td>
+                    <td>
+                        @if (el.IntegerValue)
+                        {
+                            <input type="checkbox" class="form-check-input" checked disabled />
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="form-check-input" disabled />
+                        }
+                    </td>
+                    <td>
+                        @if (el.Active)
+                        {
+                            <input type="checkbox" class="form-check-input" checked disabled />
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="form-check-input" disabled />
+                        }
+                    </td>
+                </tr>
+    }
+            number_string++;
+        }
+    </table>
+</form>
+
+<script>
+    function editRecord(s) {
+
+        location.href = "@Url.Action("EditNameOfWorks", "AdminNameOfWorks", new {WorkID= "cid" })".replace("cid", s.toString());
+    }
+</script>

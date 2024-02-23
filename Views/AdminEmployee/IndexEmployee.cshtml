@@ -1,0 +1,71 @@
+﻿@using Plan_current_repairs.Data.Models
+@model IEnumerable<Employee>
+
+@{
+    ViewBag.Title = "Сотрудники";
+    Layout = "_Layout";
+}
+
+<form name="My" class="ms-3 me-3">
+    <div class="input-group">
+        <input type="submit" value="Добавить сотрудника" class="btn-dark" asp-controller="AdminEmployee" asp-action="CardEmployee" />
+        <input class="form-control" type="text" id="searchEmployee" placeholder="Поиск по имени" onkeyup="search()" />
+    </div>
+
+    <table id="listEmployee" class="table mt-4">
+        <tr class="Font_Title Dark_Background">
+        <td><a asp-action="IndexEmployee" asp-route-sort="@ViewBag.FullNameSort">ФИО</a></td>
+        <td>Должность</td>
+        <td><a asp-action="IndexEmployee" asp-route-sort="@ViewBag.DepartmentSort">Филиал</a></td>
+        <td>Учетная запись</td>
+        <td>Электронная почта</td>
+        <td><a asp-action="IndexEmployee" asp-route-sort="@ViewBag.RoleSort">Права доступа</a></td>
+        </tr>
+
+        @{int number_string = 1; }
+        @foreach (var el in Model)
+        {
+            var Background = "";
+            @if (number_string % 2 == 0) Background = "Dark_Background";
+
+            <tr ondblclick="editRecord(@el.ID)" class="@Background">
+                <td>@el.FullName</td>
+                <td>@el.Post</td>
+                <td>@el.Department.NameDepartment</td>
+                <td>@el.Account</td>
+                <td>@el.Email</td>
+                <td>@el.Role</td>
+            </tr>
+
+            number_string++;
+        }
+
+    </table>
+</form>
+
+<script>
+    function editRecord(s) {
+
+        location.href = "@Url.Action("EditEmployee", "AdminEmployee", new {EmployeeID= "cid" })".replace("cid", s.toString());
+    }
+
+    function search() { 
+        var input, filter,table, tr, td, i;
+        input = document.getElementById("searchEmployee");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("listEmployee");
+        tr = table.getElementsByTagName("tr");
+
+        for (i = 1; i < tr.length; i++) { 
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) { 
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1){
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+
+    }
+</script>

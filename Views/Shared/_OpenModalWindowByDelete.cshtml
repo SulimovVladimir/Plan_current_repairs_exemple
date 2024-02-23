@@ -1,0 +1,18 @@
+﻿@model IEnumerable<string>
+
+    <div class="modal" id="ModalDelete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Внимание</h3>
+                </div>
+                <div class="modal-body">
+                    @Model.ToList()[0]
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Удалить" class="btn-dark" asp-controller="@Model.ToList()[1]" asp-action="@Model.ToList()[2]" />
+                    <button type="button" data-bs-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>

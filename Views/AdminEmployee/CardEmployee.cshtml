@@ -1,0 +1,63 @@
+﻿@model Plan_current_repairs.Data.Models.Employee
+@{
+    ViewBag.Title = "Добавление сотрудника";
+    Layout = "_Layout";
+}
+
+
+<div class="validation-summary-errors" style="margin-left: 50px" asp-validation-summary="ModelOnly"></div>
+<form asp-action="CardEmployee" asp-controller="AdminEmployee" style="margin-left: 50px ; margin-right: 50px">
+    <input type="hidden" asp-for="ID" />
+    <div class="form-group">
+        <label asp-for="FullName" class="control-label">ФИО</label><br />
+        <input type="text" asp-for="FullName" class="form-control" />
+        <span class="field-validation-error" asp-validation-for="FullName"></span>
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="Post" class="control-label">Должность</label><br />
+        <input type="text" asp-for="Post" class="form-control"/>
+        <span class="field-validation-error" asp-validation-for="Post"></span>
+    </div><br />
+
+    <div class="form-group">
+        <select asp-for="DepartmentID" asp-items="ViewBag.Departmens" name="DepartmentID">
+            <option>Выберите филиал</option>
+        </select>
+       
+    </div><br />
+    <div class="form-group">
+        <label asp-for="Account" class="control-label">Учетная запись</label><br />
+        <input type="text" asp-for="Account" class="form-control" />
+        <span asp-validation-for="Account" class="field-validation-error"></span><br />
+    </div>
+    <div class="form-group">
+        <label asp-for="Password" class="control-label">Пароль</label><br />
+        <input type="text" asp-for="Password" class="form-control"  />
+        <span asp-validation-for="Password" class="field-validation-error"></span><br />
+    </div>
+    <div class="form-group">
+        <label asp-for="Email" class="control-label">Электронная почта</label><br />
+        <input type="email" asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="field-validation-error"></span><br />
+    </div>
+    <div class="form-group">
+        <label asp-for="Role" class="control-label">Права доступа</label>
+        <select class="form-select" asp-for="Role" name="Role">
+            <option value="Пользователь">Пользователь</option>
+            <option value="Рецензент">Рецензент</option>
+            <option value="Администратор">Администратор</option>
+        </select>
+    </div><br />
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-dark bg-dark text-white" />
+        @if (Model != null && Model.ID != 0)
+        {
+            <a class="btn btn-outline-dark bg-dark text-white" onclick="return ShowWindowConfirm('Вы удаляете сотрудника: @Model.FullName. Продолжить?')" asp-controller="AdminEmployee" asp-action="DeleteEmployee" asp-route-EmployeeID=@Model.ID>Удалить</a>
+        }
+    </div>
+</form>
+
+        <script>
+    if (document.getElementById("Password").defaultValue =="") document.getElementById("Password").defaultValue = "12345";
+        </script>

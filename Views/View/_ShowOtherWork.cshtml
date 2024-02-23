@@ -1,0 +1,63 @@
+﻿@using Plan_current_repairs.Data.VIewModels;
+@model IEnumerable<OtherJornalByFact>;
+
+@{ string ShowSpecification(string discription = null, string periodicity = null, string unit = null)
+    {
+        string temp = $"Описание: {discription} \n\nПереодичность: {periodicity}\n\nЕдиница измерения: {unit}";
+        return temp;
+    }
+}
+
+<tr class="bg-warning"><td colspan="100%"><h4>Дополнительные работы, не предусмотренные планом</h4></td></tr>
+            @foreach (var record in Model)
+            {
+<tr align="center">
+    @if (ViewBag.Flags[0]) //развернуть описание
+    {
+        <td align="left" class="w-25 fw-bold" valign="middle">@record.otherWork.NameOtherWork</td>
+        <td>@record.otherWork.DiscriptionOtherWork</td>
+        <td>@record.otherWork.PeriodicityOtherWork</td>
+        <td>@record.otherWork.UnitOtherWork</td>
+    }
+    else     //свернуть описание
+    {
+        <td align="left" class="w-25 fw-bold" valign="middle" title="@ShowSpecification(record.otherWork.DiscriptionOtherWork, record.otherWork.PeriodicityOtherWork, record.otherWork.UnitOtherWork)">@record.otherWork.NameOtherWork</td>
+    }
+
+    <td>@record.OtherPlanArray.Sum()</td>
+    <td class="@ViewBag.Display[5]">@record.OtherFactArray.Sum()</td>
+    <td class="@ViewBag.Display[1]">@record.OtherPlanArray.Take(3).Sum()</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[1]">@record.OtherFactArray.Take(3).Sum()</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@record.OtherPlanArray[0]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@record.OtherFactArray[0]</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@record.OtherPlanArray[1]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@record.OtherFactArray[1]</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@record.OtherPlanArray[2]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@record.OtherFactArray[2]</td>
+    <td class="@ViewBag.Display[2]">@record.OtherPlanArray.Skip(3).Take(3).Sum()</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[2]">@record.OtherFactArray.Skip(3).Take(3).Sum()</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@record.OtherPlanArray[3]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@record.OtherFactArray[3]</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@record.OtherPlanArray[4]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@record.OtherFactArray[4]</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@record.OtherPlanArray[5]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@record.OtherFactArray[5]</td>
+    <td class="@ViewBag.Display[3]">@record.OtherPlanArray.Skip(6).Take(3).Sum()</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[3]">@record.OtherFactArray.Skip(6).Take(3).Sum()</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@record.OtherPlanArray[6]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@record.OtherFactArray[6]</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@record.OtherPlanArray[7]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@record.OtherFactArray[7]</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@record.OtherPlanArray[8]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@record.OtherFactArray[8]</td>
+    <td class="@ViewBag.Display[4]">@record.OtherPlanArray.Skip(9).Take(3).Sum()</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[4]">@record.OtherFactArray.Skip(9).Take(3).Sum()</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@record.OtherPlanArray[9]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@record.OtherFactArray[9]</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@record.OtherPlanArray[10]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@record.OtherFactArray[10]</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@record.OtherPlanArray[11]</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@record.OtherFactArray[11]</td>
+
+</tr>
+}

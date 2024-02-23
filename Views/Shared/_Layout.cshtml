@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" />
+    <title>План текущего ремонта - @ViewBag.Title</title>
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/custom.css" rel="stylesheet" type="text/css" />
+
+
+</head>
+<body>
+    <header>
+        <!-- Fixed navbar -->
+        <button onclick="topFunction()" id="topBtn" title="Наверх">Наверх</button>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark d-print-none">
+            <div class="container-fluid">
+                <a class="navbar-brand ms-5" asp-controller="Home" asp-action="Index">План текущего ремонта</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" asp-controller="Jornal" asp-action="IndexJornal">Заполнение</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" data-bs-toggle="modal" data-bs-target="#ModalView" href="#ModalView">Просмотр</a>
+                            @await Html.PartialAsync("_OpenModalByView")
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" asp-controller="Act" asp-action="IndexAct">Акты</a>
+                        </li>
+                        @{
+                            bool isAdmin = false;
+                            bool showPageEmployee = false;
+                            try
+                            {
+                                if (Context.User.Identity.IsAuthenticated && Context.User.FindFirst("Role").Value == "Admin") isAdmin = true;
+                                if (Context.User.Identity.IsAuthenticated && (Context.User.HasClaim("Role", "User") | Context.User.HasClaim("ReviewerRole", "HeadOfDepartment"))) showPageEmployee = true;
+                            }
+                            catch { }
+
+                            if(isAdmin)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" asp-controller="Admin" asp-action="IndexAdmin">Администрирование</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" data-bs-toggle="modal" data-bs-target="#ModalLog" href="#ModalLog">Логи</a>
+                                    @await Html.PartialAsync("_OpenModalByLog")
+                                </li>
+                            }
+
+                            if (showPageEmployee)
+                            {
+                                <li class="nav-item active dropdown">
+                                    <a class="nav-link text-white dropdown" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Словари</a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item text-center" asp-controller="AdminEmployee" asp-action="ListEmployee">Сотрудники</a></li>
+                                        <li><a class="dropdown-item text-center" asp-controller="AdminDictionarySector" asp-action="IndexDictionarySector" asp-route-currentDepartment="@Context.User.FindFirst("IDDepartment").Value">Участки</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        }
+                        
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="ShowHelp">Справка</a>
+                        </li>
+                    </ul>
+                    <div class="navbar-nav me-5">
+                        @if (Context.User.Identity.Name != null)
+                        {
+                            
+                            <div class="nav-link active dropdown">
+                                <button type="button" class=" border-0 bg-transparent text-white" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @Context.User.Identity.Name
+                                </button>
+                                <ul class="dropdown-menu border-0 bg-light ">
+                                    <li class="dropdown-item">
+                                        <a class="border-0 bg-transparent text-decoration-none text-dark" asp-action="ChangePassword" asp-controller="AdminEmployee">
+                                            Сменить пароль
+                                            </a>
+                                        
+                                    </li>   
+                                </ul>
+                            </div>
+
+                            <a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Logout">Выйти</a>
+                        }
+                        else
+                        {
+                            <a class="nav-link active" aria-current="page" asp-controller="Home" asp-action="Login">Войти</a>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    @if (TempData["Info"] != null)
+    {<div class="alert alert-warning">
+            @TempData["Info"]
+        </div>
+    }
+
+    <div class="pt-3 pb-5 mb-5">
+        @RenderBody()
+    </div>
+
+
+    <footer class="footer mt-auto py-2 bg-light fixed-bottom d-print-none">
+    @if (TempData["InfoOutTime"] != null)
+    {<div class="alert alert-warning" id="InfoOutTime">
+         @TempData["InfoOutTime"]
+     </div>
+    }
+        <div class="container">
+            <span class="text-muted">Управление связи, Газпром трансгаз Самара</span>
+        </div>
+    </footer>
+</body>
+</html>
+
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/bootstrap.bundle.js"></script>
+    <script src="~/js/MyScripts.js"></script>
+
+
+

@@ -1,0 +1,83 @@
+﻿@model Plan_current_repairs.Data.Models.NameOfWorks
+@{
+    ViewBag.Title = "Добавление вида работ";
+    Layout = "_Layout";
+}
+
+<div class="validation-summary-errors" style="margin-left: 50px" asp-validation-summary="ModelOnly"></div>
+<form asp-action="CardNameOfWorks" asp-controller="AdminNameOfWorks" style="margin-left: 50px ; margin-right: 50px">
+    <input type="hidden" asp-for="WorkID" />
+
+    <div class="form-group">
+        <select asp-for="GroupNameOfWorksID" asp-items="ViewBag.AllGroup" name="GroupNameOfWorksID">
+            <option>Выберите категорию работ</option>
+        </select>
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="NameOfWork" class="control-label">Вид работы</label><br />
+        <input type="text" asp-for="NameOfWork" class="form-control" />
+        <span class="field-validation-error" asp-validation-for="NameOfWork"></span>
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="Discription" class="control-label">Описание</label><br />
+        <input type="text" asp-for="Discription" class="form-control" />
+        <span asp-validation-for="Discription" class="field-validation-error"></span>
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="Periodicity" class="control-label">Периодичность</label><br />
+        <input type="text" asp-for="Periodicity" class="form-control" />
+        <span asp-validation-for="Periodicity" class="field-validation-error"></span>
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="Unit" class="control-label">Единица измерения</label><br />
+        <input type="text" asp-for="Unit" class="form-control" />
+        <span asp-validation-for="Unit" class="field-validation-error"></span>
+    </div><br />
+
+    <div class="form-group">
+        <input type="checkbox" asp-for="IntegerValue" />
+        <label asp-for="IntegerValue" class="control-label">Целочисленное данные</label>
+        <span asp-validation-for="IntegerValue" class="field-validation-error"></span>
+    </div><br />
+
+    <div class="form-group">
+        <select asp-for="TypeRecords" asp-items="ViewBag.typeRecords" name="typeRecords">
+        </select>
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="Parameter_1" class="control-label">Параметр 1</label><br />
+        <input type="text" asp-for="Parameter_1" class="form-control" />
+        <span asp-validation-for="Parameter_1" class="field-validation-error"></span>
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="Parameter_2" class="control-label">Параметр 2</label><br />
+        <input type="text" asp-for="Parameter_2" class="form-control" />
+        <span asp-validation-for="Parameter_2" class="field-validation-error"></span>
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="Parameter_3" class="control-label">Параметр 3</label><br />
+        <input type="text" asp-for="Parameter_3" class="form-control" />
+        <span asp-validation-for="Parameter_3" class="field-validation-error"></span>
+    </div><br />
+
+    <div class="form-group">
+        <input type="checkbox" checked="checked" asp-for="Active" />
+        <label asp-for="Active" class="control-label">Использовать в плане</label>
+        <span asp-validation-for="Active" class="field-validation-error"></span>
+    </div><br />
+
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-dark bg-dark text-white" />
+        @if (Model != null && Model.WorkID != 0)
+        {
+            <a class="btn btn-outline-dark bg-dark text-white" onclick="return ShowWindowConfirm('Удаление наименования работ приведет к удалению связанных данных в журнале. Продолжить удаление?')" asp-controller="AdminNameOfWorks" asp-action="DeleteNameOfWorks" asp-route-WorkID=@Model.WorkID>Удалить</a>
+        }
+    </div>
+</form>

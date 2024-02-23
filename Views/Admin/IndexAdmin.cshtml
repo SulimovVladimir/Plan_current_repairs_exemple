@@ -1,0 +1,41 @@
+﻿@model Plan_current_repairs.Data.Models.Year
+@{
+    ViewBag.Title = "Администрирование";
+    Layout = "_Layout";
+}
+
+ 
+<div class="container-fluid pt-3 pb-5 m-3">
+    <div class="row-12 text-center">
+        <a class="mx-2 text-decoration-none" asp-controller="AdminDepartment" asp-action="IndexDepartment">
+            <img src="~/img/Department.png" class="rounded" alt="Department.png" width="250" height="180">
+        </a>
+
+        <a class="mx-2 text-decoration-none" asp-controller="AdminEmployee" asp-action="IndexEmployee">
+            <img src="~/img/Employee.jpg" class="rounded" alt="Employee.jpg" width="250" height="180" />
+        </a>
+
+        <a class="mx-2 text-decoration-none" asp-controller="AdminGroupOfWorks" asp-action="IndexGroup">
+            <img src="~/img/GroupWork.jpg" class="rounded" alt="GroupWork.jpg" width="250" height="180" />
+        </a>
+
+        <a class="mx-2 text-decoration-none" asp-controller="AdminNameOfWorks" asp-action="IndexNameOfWorks">
+            <img src="~/img/NameOfWorks.jpg" class="rounded" alt="NameOfWorks.jpg" width="250" height="180">
+        </a>
+
+        <a class="mx-2 text-decoration-none" asp-controller="AdminDictionarySector" asp-action="IndexDictionarySector">
+            <img src="~/img/Dictionary.jpg" class="rounded" alt="Dictionary.jpg" width="250" height="180">
+        </a>
+
+        <a class="mx-2 text-decoration-none" asp-controller="AdminSettings" asp-action="IndexAdminSettings">
+            <img src="~/img/Settings.jpg" class="rounded" alt="Settings.jpg" width="250" height="180">
+        </a>
+    </div>
+</div>
+
+
+
+
+
+
+

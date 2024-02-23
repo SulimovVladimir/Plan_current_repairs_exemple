@@ -1,0 +1,61 @@
+Information-----Quartz.Core.SchedulerSignalerImpl-----23.02.2024 19:01:15-----Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:01:15-----Quartz Scheduler created 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:01:15-----JobFactory set to: Quartz.Simpl.MicrosoftDependencyInjectionJobFactory 
+Information-----Quartz.Simpl.RAMJobStore-----23.02.2024 19:01:15-----RAMJobStore initialized. 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:01:15-----Quartz Scheduler 3.7.0.0 - 'QuartzScheduler' with instanceId 'NON_CLUSTERED' initialized 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:01:15-----Using thread pool 'Quartz.Simpl.DefaultThreadPool', size: 10 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:01:15-----Using job store 'Quartz.Simpl.RAMJobStore', supports persistence: False, clustered: False 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:01:16-----Now listening on: http://127.0.0.1:40485 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:01:16-----Application started. Press Ctrl+C to shut down. 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:01:16-----Hosting environment: Development 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:01:16-----Content root path: C:\Users\Sulimovy\source\repos\Plan_current_repairs 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:01:16-----Scheduler QuartzScheduler_$_NON_CLUSTERED started. 
+Information-----Quartz.Core.SchedulerSignalerImpl-----23.02.2024 19:02:49-----Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:02:49-----Quartz Scheduler created 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:02:49-----JobFactory set to: Quartz.Simpl.MicrosoftDependencyInjectionJobFactory 
+Information-----Quartz.Simpl.RAMJobStore-----23.02.2024 19:02:49-----RAMJobStore initialized. 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:02:49-----Quartz Scheduler 3.7.0.0 - 'QuartzScheduler' with instanceId 'NON_CLUSTERED' initialized 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:02:49-----Using thread pool 'Quartz.Simpl.DefaultThreadPool', size: 10 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:02:49-----Using job store 'Quartz.Simpl.RAMJobStore', supports persistence: False, clustered: False 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:02:49-----Now listening on: http://127.0.0.1:12993 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:02:49-----Application started. Press Ctrl+C to shut down. 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:02:49-----Hosting environment: Development 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:02:49-----Content root path: C:\Users\Sulimovy\source\repos\Plan_current_repairs 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:02:49-----Scheduler QuartzScheduler_$_NON_CLUSTERED started. 
+Information-----Plan_current_repairs.Controllers.AdminEmployeeController-----23.02.2024 19:03:18-----Пользователь Admin удалил учетную запись: логин:Admin, филиал:Администрация, ID:2 
+Information-----Quartz.Core.SchedulerSignalerImpl-----23.02.2024 19:42:19-----Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:42:19-----Quartz Scheduler created 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:42:19-----JobFactory set to: Quartz.Simpl.MicrosoftDependencyInjectionJobFactory 
+Information-----Quartz.Simpl.RAMJobStore-----23.02.2024 19:42:19-----RAMJobStore initialized. 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:42:19-----Quartz Scheduler 3.7.0.0 - 'QuartzScheduler' with instanceId 'NON_CLUSTERED' initialized 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:42:19-----Using thread pool 'Quartz.Simpl.DefaultThreadPool', size: 10 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:42:19-----Using job store 'Quartz.Simpl.RAMJobStore', supports persistence: False, clustered: False 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:42:20-----Now listening on: http://127.0.0.1:29822 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:42:20-----Application started. Press Ctrl+C to shut down. 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:42:20-----Hosting environment: Development 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:42:20-----Content root path: C:\Users\Sulimovy\source\repos\Plan_current_repairs_exemple 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:42:20-----Scheduler QuartzScheduler_$_NON_CLUSTERED started. 
+Information-----Quartz.Core.SchedulerSignalerImpl-----23.02.2024 19:52:26-----Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:52:26-----Quartz Scheduler created 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:52:26-----JobFactory set to: Quartz.Simpl.MicrosoftDependencyInjectionJobFactory 
+Information-----Quartz.Simpl.RAMJobStore-----23.02.2024 19:52:26-----RAMJobStore initialized. 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:52:26-----Quartz Scheduler 3.7.0.0 - 'QuartzScheduler' with instanceId 'NON_CLUSTERED' initialized 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:52:26-----Using thread pool 'Quartz.Simpl.DefaultThreadPool', size: 10 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:52:26-----Using job store 'Quartz.Simpl.RAMJobStore', supports persistence: False, clustered: False 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:52:27-----Now listening on: http://127.0.0.1:25227 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:52:27-----Application started. Press Ctrl+C to shut down. 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:52:27-----Hosting environment: Development 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:52:27-----Content root path: C:\Users\Sulimovy\source\repos\Plan_current_repairs_exemple 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:52:27-----Scheduler QuartzScheduler_$_NON_CLUSTERED started. 
+Information-----Quartz.Core.SchedulerSignalerImpl-----23.02.2024 19:55:04-----Initialized Scheduler Signaller of type: Quartz.Core.SchedulerSignalerImpl 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:55:04-----Quartz Scheduler created 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:55:04-----JobFactory set to: Quartz.Simpl.MicrosoftDependencyInjectionJobFactory 
+Information-----Quartz.Simpl.RAMJobStore-----23.02.2024 19:55:04-----RAMJobStore initialized. 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:55:04-----Quartz Scheduler 3.7.0.0 - 'QuartzScheduler' with instanceId 'NON_CLUSTERED' initialized 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:55:04-----Using thread pool 'Quartz.Simpl.DefaultThreadPool', size: 10 
+Information-----Quartz.Impl.StdSchedulerFactory-----23.02.2024 19:55:04-----Using job store 'Quartz.Simpl.RAMJobStore', supports persistence: False, clustered: False 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:55:05-----Now listening on: http://127.0.0.1:12352 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:55:05-----Application started. Press Ctrl+C to shut down. 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:55:05-----Hosting environment: Development 
+Information-----Microsoft.Hosting.Lifetime-----23.02.2024 19:55:05-----Content root path: C:\Users\Sulimovy\source\repos\Plan_current_repairs_exemple 
+Information-----Quartz.Core.QuartzScheduler-----23.02.2024 19:55:05-----Scheduler QuartzScheduler_$_NON_CLUSTERED started. 

@@ -1,0 +1,16 @@
+﻿@model Plan_current_repairs.Data.Models.Year
+@{
+    ViewBag.Title = "Добавление года";
+    Layout = "_Layout";
+}
+
+
+<form class="mx-2" asp-action="AddYear" asp-controller="AdminSettings">
+    <div class="form-group">
+        <label asp-for="Years" class="control-label">Введите год плана</label><br />
+        <input type="text" asp-for="Years" class="form-control" />
+        <span asp-validation-for="Years"></span><br />
+    </div>
+
+        <input type="submit" value="добавить" class="btn-dark" />
+</form>

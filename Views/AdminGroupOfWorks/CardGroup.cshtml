@@ -1,0 +1,23 @@
+﻿@model Plan_current_repairs.Data.Models.GroupNameOfWorks
+@{
+    ViewBag.Title = "Добавление группы работ";
+    Layout = "_Layout";
+}
+
+
+<form asp-action="CardGroup" asp-controller="AdminGroupOfWorks" style="margin-left: 50px ; margin-right: 50px">
+    <input type="hidden" asp-for="GroupID" />
+    <div class="form-group">
+        <label asp-for="NameGroup" class="control-label">Название группы</label><br />
+        <input type="text" asp-for="NameGroup" class="form-control" />
+        <span asp-validation-for="NameGroup"></span><br />
+    </div>
+   
+    <div class="form-group">
+        <input type="submit" value="Сохранить" class="btn btn-outline-dark bg-dark text-white" />
+        @if (Model != null && Model.GroupID != 0)
+        {
+            <a class="btn btn-outline-dark bg-dark text-white" onclick="return ShowWindowConfirm('Удаление группы работ приведет к удалению связанных наименований работ. Продолжить удаление?')" asp-controller="AdminGroupOfWorks" asp-action="DeleteGroupOfWorks" asp-route-GroupID=@Model.GroupID>Удалить</a>
+        }
+    </div>
+</form>

@@ -1,0 +1,181 @@
+﻿@using Plan_current_repairs.Data.Models
+
+@model Plan_current_repairs.Data.VIewModels.CardAct
+
+@{
+    ViewBag.Title = "Добавление акта выполненных работ";
+    Layout = "_Layout";
+
+    string[] data = addDate();
+    string[] addDate()
+    {
+        List<string> temp=new List<string>();
+        foreach (var item in ViewBag.AllEmployee)
+        {
+            temp.Add(item.Key);
+            temp.Add(item.Value);
+        }
+        return temp.ToArray();
+    }
+}
+
+
+<div class="container-fluid">
+<form asp-action="CardAct" asp-controller="Act" style="margin-left: 50px ; margin-right: 50px" class="" >
+        <input type="hidden" asp-for="actOfWork.IDAct" />
+        <input type="hidden" asp-for="actOfWork.DepartmentID" />
+        <input type="hidden" asp-for="actOfWork.YearID" />
+        <input type="hidden" asp-for="RecordID" />
+        <input type="hidden" asp-for="RecordOtherID" />
+        <input type="hidden" asp-for="Block" />
+     <div class="row">
+        <div class="col-xl-8 col-md-6 col-sm-2"></div>
+        <div class="col-xl-4 col-md-6 col-sm-10">
+            <div class="input-group">
+                    <label asp-for="actOfWork.DateAct" class="input-group-text text-nowrap">Дата составления акта</label>
+                    <input type="date" asp-for="actOfWork.DateAct" class="form-control" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+    <div class="input-group col-12 justify-content-center mt-5">
+                @{
+                    if (Model.RecordID == 0 && Model.RecordOtherID==0 && Model.actOfWork.NumberAct!=null) {
+                       <h3 class="text-center input-group-text">Акт выполненных работ № @Model.actOfWork.NumberAct <input type="hidden" asp-for="actOfWork.NumberAct" /></h3>
+                    }
+                    else {
+                        <h3 class="text-center input-group-text">Акт выполненных работ № @Model.actOfWork.Department.StandartNumberAct-@Model.Block-<input type="text" asp-for="actOfWork.NumberAct" class="form-control ms-1" /></h3>
+                    };
+        }
+            </div>
+        </div>
+    
+                <div class="row mx-3">
+            <p>Настоящий акт составлен о том, что бригада в составе:</p>
+                    <table id ="listEmployee">
+
+                @{
+                    if (Model.actOfWork.EmployeeList!=null)
+                    {
+                        for(int i=0; i<Model.actOfWork.EmployeeList.Count();i++)
+                    {
+                                                <tr>
+                                                <td>
+                                                <div class="input-group">
+                                                    <label class="input-group-text">Должность</label>
+                                                            <input type="text" name="actOfWork.EmployeeList[@i][1]" id="actOfWork.EmployeeList[@i][1]" class="form-control" value="@Model.actOfWork.EmployeeList[i][1]" />
+                                                    <label class="input-group-text">ФИО</label>
+                                                            <input type="text" name="actOfWork.EmployeeList[@i][0]" id="actOfWork.EmployeeList[@i][0]" value="@Model.actOfWork.EmployeeList[i][0]"  class="form-control" />
+                                                </div>
+                                                </td>
+                                                </tr>
+                    }
+                    
+                    }
+                }
+
+                        @* @{
+                for (int i = 0; i < Model.EmployeeList.Count; i++)
+                {
+                    <div class="input-group">
+                        <label class="input-group-text">Должность</label>
+                        <input type="text" class="form-control" asp-for="EmployeeList.ToList()[i].Value" />
+                    </div>
+                    <div class="input-group">
+                        <label class="input-group-text">ФИО</label>
+                        <input type="text" class="form-control" asp-for="EmployeeList.ToList()[i].Key" />
+                    </div>
+                }
+            }*@
+
+                    </table>
+                    <input type="button" class="mt-2" value="Добавить работника" onclick="addEmployee()"/>
+
+
+                    <p class="mt-2">выполнила следующий объем работ:</p>
+            <textarea asp-for="actOfWork.TitleWork" class="mx-1" rows="10"></textarea>
+                
+        <div class="my-5">
+                        <p>Ответственный за выполнение работ:</p>
+                        <div class="input-group">
+                            <label class="input-group-text">Должность</label>
+                            <input type="text" asp-for="actOfWork.ResponsibleForWork_Post" class="form-control" />
+                            <label class="input-group-text ms-3">ФИО</label>
+                    <input type="text" asp-for="actOfWork.ResponsibleForWork_Name" class="form-control" list="listAllEmployee" onchange="addPost(this)" />
+                        </div>
+                </div>
+        </div>
+        <input type="submit" value="Сохранить" class="btn btn-outline-dark bg-dark text-white float-end" />
+
+    <datalist id="listAllEmployee">
+        @foreach (var item in ViewBag.AllEmployee)
+        {
+                <option value="@item.Key">@item.Key</option>
+        }
+    </datalist>
+
+</form>
+<select class="d-none" id="dictionaryForJS">
+        @foreach (var item in ViewBag.AllEmployee)
+        {
+            <option value="@item.Value">@item.Key</option>
+        }
+</select>
+</div>
+
+
+<script>
+    function addEmployee() {
+        let container = document.getElementById("listEmployee");
+        let fieldCount= container.getElementsByTagName("tr").length;       
+        let div = document.createElement("div");
+            div.setAttribute ("class","input-group");
+        let tr=document.createElement("tr");
+        let td = document.createElement("td");
+        let label=document.createElement("label");
+            label.setAttribute("class", "input-group-text")
+            label.innerHTML="Должность";
+
+        let label2 = document.createElement("label");
+            label2.setAttribute("class", "input-group-text")
+            label2.innerHTML = "ФИО";
+
+        let field1 = document.createElement("input");
+        field1.setAttribute("class", "form-control");
+        field1.setAttribute("name", "actOfWork.EmployeeList[" + fieldCount + "][1]");
+        field1.setAttribute("id", "actOfWork.EmployeeList[" + fieldCount + "][1]");
+        field1.setAttribute("type", "text");
+
+        let field2 = document.createElement("input");
+        field2.setAttribute("class", "form-control");
+        field2.setAttribute("name", "actOfWork.EmployeeList[" + fieldCount + "][0]");
+        field2.setAttribute("id", "actOfWork.EmployeeList[" + fieldCount + "][0]");
+        field2.setAttribute("type", "text");
+        field2.setAttribute("list", "listAllEmployee");
+        field2.setAttribute("onchange", "addPost(this)");
+
+        div.appendChild(label);
+        div.appendChild(field1);
+        td.appendChild(div);
+        tr.appendChild(td);
+
+        div.removeChild;
+        td.removeChild;
+
+        div.appendChild(label2);
+        div.appendChild(field2);
+        td.appendChild(div)
+        tr.appendChild(td);
+        container.appendChild(tr);
+    }
+
+    function addPost(el) {
+        let temp = el.previousElementSibling;
+        let post = temp.previousElementSibling;
+        let dictionary = document.getElementById("dictionaryForJS");
+        for (let i = 0; i < dictionary.options.length; i++) {
+            if (dictionary.options[i].text == el.value) { post.value = dictionary.options[i].value; break; }
+        }
+    }
+</script>

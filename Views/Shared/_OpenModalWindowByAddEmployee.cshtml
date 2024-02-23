@@ -1,0 +1,31 @@
+﻿@using Plan_current_repairs.Data.Models
+@model IEnumerable<Employee>
+
+
+
+<div class="modal" id="ModalAddEmployee" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Внимание</h3>
+                </div>
+            <form id="addEmployeeForm" asp-action="AddEmployee" asp-controller="AdminEmployee" style="margin-left: 50px ; margin-right: 50px">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="fullName" class="control-label">ФИО</label><br />
+                        <input id="fullName" name="fullName" type="text" class="form-control" />
+                    </div><br />
+
+                    <div class="form-group">
+                        <label for="post" class="control-label">Должность</label><br />
+                        <input id="post" name="post" type="text" class="form-control" />
+                    </div><br />
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Добавить" class="btn-dark" />
+                    <button type="button" data-bs-dismiss="modal">Отмена</button>
+                </div>
+                </form>
+            </div>
+        </div>
+</div>

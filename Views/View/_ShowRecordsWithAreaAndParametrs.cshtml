@@ -1,0 +1,313 @@
+﻿@using Plan_current_repairs.Data.VIewModels;
+@model IGrouping<string, RecordsByJornal>
+
+
+@{ string ShowSpecification(string discription = null, string periodicity = null, string unit = null)
+    {
+        string temp = $"Описание: {discription} \n\nПереодичность: {periodicity}\n\nЕдиница измерения: {unit}";
+        return temp;
+    }
+}
+
+
+
+
+<tr class="fw-bold" align="center" valign="middle">
+        @if (ViewBag.Flags[0]) //развернуть описание
+        {
+            <td align="left" class="w-25 fw-bold" valign="middle">@Model.ToList()[0].nameOfWorks.NameOfWork</td>
+            <td>@Model.ToList()[0].nameOfWorks.Discription</td>
+            <td>@Model.ToList()[0].nameOfWorks.Periodicity</td>
+            <td>@Model.ToList()[0].nameOfWorks.Unit</td>
+        }
+        else     //свернуть описание
+        {
+            <td align="left" class="w-25 fw-bold" valign="middle" title="@ShowSpecification(Model.ToList()[0].nameOfWorks.Discription, Model.ToList()[0].nameOfWorks.Periodicity, Model.ToList()[0].nameOfWorks.Unit)">@Model.ToList()[0].nameOfWorks.NameOfWork</td>
+        }
+
+    @if (Model.ToList()[0].PlanArray == null)
+    {
+        <td>0</td>
+        <td class="@ViewBag.Display[5]">0</td>
+
+        <td class="@ViewBag.Display[1]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[1]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[1]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[1]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[1]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">0</td>
+
+        <td class="@ViewBag.Display[2]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[2]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[2]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[2]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[2]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">0</td>
+
+        <td class="@ViewBag.Display[3]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[3]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[3]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[3]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[3]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">0</td>
+
+        <td class="@ViewBag.Display[4]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[4]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[4]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">0)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[4]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">0</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[4]">0</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">0</td>
+
+    }
+
+    else
+    {
+        <td>@Math.Round(Model.Sum(x => x.PlanArray.Sum()),3)</td>
+        <td class="@ViewBag.Display[5]">@Math.Round(Model.Sum(x => x.FactArray.Sum()),3)</td>
+
+        <td class="@ViewBag.Display[1]">@Math.Round(Model.Sum(x => x.PlanArray.Take(3).Sum()),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[1]">@Math.Round(Model.Sum(x => x.FactArray.Take(3).Sum()),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(Model.Sum(x => x.PlanArray[0]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(Model.Sum(x => x.FactArray[0]),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(Model.Sum(x => x.PlanArray[1]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(Model.Sum(x => x.FactArray[1]),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(Model.Sum(x => x.PlanArray[2]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(Model.Sum(x => x.FactArray[2]),3)</td>
+
+        <td class="@ViewBag.Display[2]">@Math.Round(Model.Sum(x => x.PlanArray.Skip(3).Take(3).Sum()),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[2]">@Math.Round(Model.Sum(x => x.FactArray.Skip(3).Take(3).Sum()),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(Model.Sum(x => x.PlanArray[3]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(Model.Sum(x => x.FactArray[3]),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(Model.Sum(x => x.PlanArray[4]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(Model.Sum(x => x.FactArray[4]),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(Model.Sum(x => x.PlanArray[5]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(Model.Sum(x => x.FactArray[5]),3)</td>
+
+        <td class="@ViewBag.Display[3]">@Math.Round(Model.Sum(x => x.PlanArray.Skip(6).Take(3).Sum()),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[3]">@Math.Round(Model.Sum(x => x.FactArray.Skip(6).Take(3).Sum()),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(Model.Sum(x => x.PlanArray[6]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(Model.Sum(x => x.FactArray[6]),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(Model.Sum(x => x.PlanArray[7]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(Model.Sum(x => x.FactArray[7]),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(Model.Sum(x => x.PlanArray[8]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(Model.Sum(x => x.FactArray[8]),3)</td>
+
+        <td class="@ViewBag.Display[4]">@Math.Round(Model.Sum(x => x.PlanArray.Skip(9).Take(3).Sum()),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[4]">@Math.Round(Model.Sum(x => x.FactArray.Skip(9).Take(3).Sum()),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(Model.Sum(x => x.PlanArray[9]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(Model.Sum(x => x.FactArray[9]),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(Model.Sum(x => x.PlanArray[10]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(Model.Sum(x => x.FactArray[10]),3)</td>
+        <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(Model.Sum(x => x.PlanArray[11]),3)</td>
+        <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(Model.Sum(x => x.FactArray[11]),3)</td>
+
+    }
+</tr>
+
+
+@if (Model.ToList()[0].jornal != null)
+{
+    Dictionary<string, List<List<float[]>>> parameters = new Dictionary<string, List<List<float[]>>>();
+    if (Model.ToList()[0].nameOfWorks.Parameter_1 != null) parameters.Add(Model.ToList()[0].nameOfWorks.Parameter_1, new List<List<float[]>> { Model.Select(x => x.PlanParameters_1).ToList(), Model.Select(x => x.FactParameters_1).ToList() });
+    if (Model.ToList()[0].nameOfWorks.Parameter_2 != null) parameters.Add(Model.ToList()[0].nameOfWorks.Parameter_2, new List<List<float[]>> { Model.Select(x => x.PlanParameters_2).ToList(), Model.Select(x => x.FactParameters_2).ToList() });
+    if (Model.ToList()[0].nameOfWorks.Parameter_3 != null) parameters.Add(Model.ToList()[0].nameOfWorks.Parameter_3, new List<List<float[]>> { Model.Select(x => x.PlanParameters_3).ToList(), Model.Select(x => x.FactParameters_3).ToList() });
+
+
+    if (parameters != null)
+    {
+
+        foreach (var parameter in parameters)
+        {
+            <tr align="center" class="fw-bold">
+                @if (ViewBag.Flags[0]) //развернуть описание
+                {
+                    <td align="right" class="w-25" valign="middle">@parameter.Key</td>
+                    <td></td>
+                    <td></td>
+                    <td>@Model.ToList()[0].nameOfWorks.Unit</td>
+                }
+                else     //свернуть описание
+                {
+                    <td align="right" class="w-25" valign="middle" title="@ShowSpecification("", "", Model.ToList()[0].nameOfWorks.Unit)">@parameter.Key</td>
+                }
+
+                <td>@Math.Round(parameter.Value[0].Sum(x => x.Sum()),3)</td>
+                <td class="@ViewBag.Display[5]">@Math.Round(parameter.Value[1].Sum(x => x.Sum()),3)</td>
+                <td class="@ViewBag.Display[1]">@Math.Round(parameter.Value[0].Sum(x => x.Take(3).Sum()),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[1]">@Math.Round(parameter.Value[1].Sum(x => x.Take(3).Sum()),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[0].Sum(x => x[0]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[1].Sum(x => x[0]),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[0].Sum(x => x[1]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[1].Sum(x => x[1]),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[0].Sum(x => x[2]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[1].Sum(x => x[2]),3)</td>
+                <td class="@ViewBag.Display[2]">@Math.Round(parameter.Value[0].Sum(x => x.Skip(3).Take(3).Sum()),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[2]">@Math.Round(parameter.Value[1].Sum(x => x.Skip(3).Take(3).Sum()),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[0].Sum(x => x[3]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[1].Sum(x => x[3]),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[0].Sum(x => x[4]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[1].Sum(x => x[4]),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[0].Sum(x => x[5]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[1].Sum(x => x[5]),3)</td>
+                <td class="@ViewBag.Display[3]">@Math.Round(parameter.Value[0].Sum(x => x.Skip(6).Take(3).Sum()),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[3]">@Math.Round(parameter.Value[1].Sum(x => x.Skip(6).Take(3).Sum()),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[0].Sum(x => x[6]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[1].Sum(x => x[6]),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[0].Sum(x => x[7]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[1].Sum(x => x[7]),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[0].Sum(x => x[8]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[1].Sum(x => x[8]),3)</td>
+                <td class="@ViewBag.Display[4]">@Math.Round(parameter.Value[0].Sum(x => x.Skip(9).Take(3).Sum()),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[4]">@Math.Round(parameter.Value[1].Sum(x => x.Skip(9).Take(3).Sum()),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[0].Sum(x => x[9]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[1].Sum(x => x[9]),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[0].Sum(x => x[10]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[1].Sum(x => x[10]),3)</td>
+                <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[0].Sum(x => x[11]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[1].Sum(x => x[11]),3)</td>
+
+
+            </tr>
+        }
+    }
+
+    var RecordsWithAreaOnlyDepartment = Model.OrderBy(y => y.jornal.DepartmentID).GroupBy(x => x.jornal.DepartmentID);
+
+    @foreach (var nameOnlyDepartment in RecordsWithAreaOnlyDepartment)
+    {
+        <tr align="center">
+
+            @if (ViewBag.Flags[0]) //развернуть описание
+            {
+                <td align="right" class="w-25" valign="middle">@nameOnlyDepartment.ToList()[0].jornal.department.NameDepartment</td>
+                <td>@nameOnlyDepartment.ToList()[0].nameOfWorks.Discription</td>
+                <td>@nameOnlyDepartment.ToList()[0].nameOfWorks.Periodicity</td>
+                <td>@nameOnlyDepartment.ToList()[0].nameOfWorks.Unit</td>
+            }
+            else     //свернуть описание
+            {
+                <td align="right" class="w-25" valign="middle" title="@ShowSpecification(nameOnlyDepartment.ToList()[0].nameOfWorks.Discription, nameOnlyDepartment.ToList()[0].nameOfWorks.Periodicity, nameOnlyDepartment.ToList()[0].nameOfWorks.Unit)">@nameOnlyDepartment.ToList()[0].jornal.department.NameDepartment</td>
+            }
+
+            <td>@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray.Sum()),3)</td>
+            <td class="@ViewBag.Display[5]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray.Sum()),3)</td>
+
+            <td class="@ViewBag.Display[1]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray.Take(3).Sum()),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[1]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray.Take(3).Sum()),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[0]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[0]),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[1]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[1]),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[2]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[2]),3)</td>
+
+            <td class="@ViewBag.Display[2]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray.Skip(3).Take(3).Sum()),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[2]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray.Skip(3).Take(3).Sum()),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[3]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[3]),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[4]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[4]),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[5]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[5]),3)</td>
+
+            <td class="@ViewBag.Display[3]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray.Skip(6).Take(3).Sum()),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[3]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray.Skip(6).Take(3).Sum()),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[6]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[6]),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[7]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[7]),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[8]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[8]),3)</td>
+
+            <td class="@ViewBag.Display[4]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray.Skip(9).Take(3).Sum()),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[4]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray.Skip(9).Take(3).Sum()),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[9]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[9]),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[10]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[10]),3)</td>
+            <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(nameOnlyDepartment.Sum(x => x.PlanArray[11]),3)</td>
+            <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(nameOnlyDepartment.Sum(x => x.FactArray[11]),3)</td>
+
+
+        </tr>
+
+        Dictionary<string, List<List<float[]>>> parametersOnlyRecord = new Dictionary<string, List<List<float[]>>>();
+        if (nameOnlyDepartment.ToList()[0].nameOfWorks.Parameter_1 != null) parametersOnlyRecord.Add(nameOnlyDepartment.ToList()[0].nameOfWorks.Parameter_1, new List<List<float[]>> { nameOnlyDepartment.Select(x => x.PlanParameters_1).ToList(), nameOnlyDepartment.Select(x => x.FactParameters_1).ToList() });
+        if (nameOnlyDepartment.ToList()[0].nameOfWorks.Parameter_2 != null) parametersOnlyRecord.Add(nameOnlyDepartment.ToList()[0].nameOfWorks.Parameter_2, new List<List<float[]>> { nameOnlyDepartment.Select(x => x.PlanParameters_2).ToList(), nameOnlyDepartment.Select(x => x.FactParameters_2).ToList() });
+        if (nameOnlyDepartment.ToList()[0].nameOfWorks.Parameter_3 != null) parametersOnlyRecord.Add(nameOnlyDepartment.ToList()[0].nameOfWorks.Parameter_3, new List<List<float[]>> { nameOnlyDepartment.Select(x => x.PlanParameters_3).ToList(), nameOnlyDepartment.Select(x => x.FactParameters_3).ToList() });
+
+        foreach (var parameter in parametersOnlyRecord)
+        {
+<tr align="center">
+    @if (ViewBag.Flags[0]) //развернуть описание
+    {
+        <td align="right" class="w-25" valign="middle">@parameter.Key</td>
+        <td></td>
+        <td></td>
+        <td>@Model.ToList()[0].nameOfWorks.Unit</td>
+    }
+    else     //свернуть описание
+    {
+        <td align="right" class="w-25" valign="middle" title="@ShowSpecification("", "", Model.ToList()[0].nameOfWorks.Unit)">@parameter.Key</td>
+    }
+    <td>@Math.Round(parameter.Value[0].Sum(x => x.Sum()),3)</td>
+    <td class="@ViewBag.Display[5]">@Math.Round(parameter.Value[1].Sum(x => x.Sum()),3)</td>
+    <td class="@ViewBag.Display[1]">@Math.Round(parameter.Value[0].Sum(x => x.Take(3).Sum()),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[1]">@Math.Round(parameter.Value[1].Sum(x => x.Take(3).Sum()),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[0].Sum(x => x[0]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[1].Sum(x => x[0]),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[0].Sum(x => x[1]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[1].Sum(x => x[1]),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[0].Sum(x => x[2]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[1]">@Math.Round(parameter.Value[1].Sum(x => x[2]),3)</td>
+    <td class="@ViewBag.Display[2]">@Math.Round(parameter.Value[0].Sum(x => x.Skip(3).Take(3).Sum()),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[2]">@Math.Round(parameter.Value[1].Sum(x => x.Skip(3).Take(3).Sum()),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[0].Sum(x => x[3]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[1].Sum(x => x[3]),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[0].Sum(x => x[4]),3)</td>
+                <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[1].Sum(x => x[4]),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[0].Sum(x => x[5]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[2]">@Math.Round(parameter.Value[1].Sum(x => x[5]),3)</td>
+    <td class="@ViewBag.Display[3]">@Math.Round(parameter.Value[0].Sum(x => x.Skip(6).Take(3).Sum()),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[3]">@Math.Round(parameter.Value[1].Sum(x => x.Skip(6).Take(3).Sum()),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[0].Sum(x => x[6]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[1].Sum(x => x[6]),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[0].Sum(x => x[7]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[1].Sum(x => x[7]),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[0].Sum(x => x[8]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[3]">@Math.Round(parameter.Value[1].Sum(x => x[8]),3)</td>
+    <td class="@ViewBag.Display[4]">@Math.Round(parameter.Value[0].Sum(x => x.Skip(9).Take(3).Sum()),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[4]">@Math.Round(parameter.Value[1].Sum(x => x.Skip(9).Take(3).Sum()),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[0].Sum(x => x[9]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[1].Sum(x => x[9]),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[0].Sum(x => x[10]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[1].Sum(x => x[10]),3)</td>
+    <td class="@ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[0].Sum(x => x[11]),3)</td>
+    <td class="@ViewBag.Display[5] @ViewBag.Display[0] @ViewBag.Display[4]">@Math.Round(parameter.Value[1].Sum(x => x[11]),3)</td>
+
+
+</tr>
+
+
+
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+﻿@model Plan_current_repairs.Data.Models.Department
+
+@{
+    ViewBag.Title = "Подразделения";
+    Layout = "_Layout";
+}
+
+
+
+<form name="My" class="ms-3 me-3">
+    
+    <div class="input-group">
+    <input type="submit" value="Добавить филиал" class="btn-dark" asp-controller="AdminDepartment" asp-action="CardDepartment" />
+    
+  
+    </div>
+
+    <table class="table mt-4">
+        <tr class="Font_Title Dark_Background"><td>Филиал</td><td>Руководитель</td><td>Номер актов</td></tr>
+        @{int number_string = 1; }
+        @foreach (var el in ViewBag.AllDepartment)
+        {
+            @if (number_string % 2 == 0)
+            {
+                <tr class="Dark_Background" ondblclick="editRecord(@el.ID)"><td>@el.NameDepartment</td><td>@el.DirectorDepartment</td><td>@el.StandartNumberAct</td></tr>
+            }
+            else
+            {
+                <tr ondblclick="editRecord(@el.ID)"><td>@el.NameDepartment</td><td>@el.DirectorDepartment</td><td>@el.StandartNumberAct</td></tr>
+            }
+            number_string++;
+
+        }
+    </table>
+</form>
+
+<script>
+    function editRecord(s) {
+
+        location.href = "@Url.Action("EditDepartment", "AdminDepartment", new {DepartmentID= "cid" })".replace("cid", s.toString());
+    }
+</script>
+
+
+
+
+

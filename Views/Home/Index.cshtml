@@ -1,0 +1,241 @@
+﻿@using Plan_current_repairs.Data.Models;
+@model IEnumerable<Plan_current_repairs.Data.Models.Status>
+
+@{
+    ViewBag.Title = "Страница приветствия";
+ Layout = "_Layout";
+}
+@{
+    bool IsAdmin = false;
+    bool IsUser = false;
+    bool IsReviewer = false;
+    bool IsHeadOfDepartment = false;
+    bool IsEngineerOfPTO = false;
+    bool IsHeadOfPTO = false;
+    bool IsChiefEngineer = false;
+
+    try
+    {
+        if(Context.User.Identity.IsAuthenticated)
+        {
+            switch (Context.User.FindFirst("Role").Value)
+            {
+                case "Admin": IsAdmin = true; break;
+                case "User": IsUser = true; break;
+                case "Reviewer": 
+                    { IsReviewer = true; 
+                        switch (Context.User.FindFirst("ReviewerRole").Value)
+                        {
+                            case "HeadOfDepartment": IsHeadOfDepartment = true; break;
+                            case "EngineerOfPTO": IsEngineerOfPTO = true; break;
+                            case "HeadOfPTO": IsHeadOfPTO = true; break;
+                            case "ChiefEngineer": IsChiefEngineer = true; break;
+                        }
+                        break; }
+                default: break;
+            }    
+        }
+    }
+    catch{}
+
+    string getTitleStatus(bool[] value)
+    {
+        string status = "Заполнение";
+        if (value[0] == true && value[1] == false && value[2] == false && value[3] == false) status = "Согласовано начальником цеха";
+        if (value[0] == true && value[1] == true && value[2] == false && value[3] == false) status = "Согласовано инженером ПТО";
+        if (value[0] == true && value[1] == true && value[2] == true && value[3] == false) status = "Согласовано начальником ПТО";
+        if (value[0] == true && value[1] == true && value[2] == true && value[3] == true) status = "Утверждено";
+        return status;
+    }
+
+    string showBlocking(bool value)
+    {
+        string flagBlock = value ? "block" : "";
+        return flagBlock;
+    }
+
+    bool showButtenConfirm(bool[] value)
+    {
+        if (IsHeadOfDepartment && value[0] == false && value[1] == false && value[2] == false && value[3] == false) return true;
+        if (IsEngineerOfPTO && value[0] == true && value[1] == false && value[2] == false && value[3] == false) return true;
+        if (IsHeadOfPTO && value[0] == true && value[1] == true && value[2] == false && value[3] == false) return true;
+        if (IsChiefEngineer && value[0] == true && value[1] == true && value[2] == true && value[3] == false) return true;
+        
+        return false;
+    }
+}
+
+<div class="container-fluid">
+   
+    <h5 align="center" class="pt-3 pb-3 bg-secondary text-white">@ViewBag.welcome</h5>
+
+
+    <div class="row mt-5">
+
+        <div class="col-12 text-center">
+            <a class="mx-2 text-decoration-none" asp-controller="Jornal" asp-action="IndexJornal">
+                <img src="~/img/SetJornal.jpg" class="rounded" alt="SetJornal.jpg" width="180" height="140"></a>
+
+            <a class="mx-2 text-decoration-none" data-bs-toggle="modal" data-bs-target="#ModalView" href="#ModalView"><img src="~/img/GetJornal.jpg" class="rounded" alt="GetJornal.jpg" width="180" height="140"></a>
+            @await Html.PartialAsync("_OpenModalByView")
+
+
+            <a class="mx-2 text-decoration-none" asp-controller="Act" asp-action="IndexAct"><img src="~/img/Acts.jpg" class="rounded" alt="Acts.jpg" width="180" height="140"></a>
+
+
+            @{
+                if (Context.User.Identity.IsAuthenticated && !(IsAdmin || (Context.User.HasClaim("Role", "Reviewer") && !Context.User.HasClaim("ReviewerRole", "HeadOfDepartment"))))
+                {
+                    <a class="mx-2 text-decoration-none" data-bs-toggle="modal" data-bs-target="#ModalDictionary" href="#ModalDictionary"><img src="~/img/Title_DIctionary.jpg" class="rounded" alt="GetJornal.jpg" width="180" height="140"></a>
+                    @await Html.PartialAsync("_OpenModalByDictionary")
+                }
+             }
+
+
+        @{if(IsAdmin)
+            {
+                    <a class="mx-2 text-decoration-none" asp-controller="Admin" asp-action="IndexAdmin">
+                        <img src="~/img/Admin.jpg" class="rounded" alt="Admin.jpg" width="180" height="140">
+                    </a>
+
+                    <a class="mx-2 text-decoration-none" data-bs-toggle="modal" data-bs-target="#ModalLog" href="#ModalLog"><img src="~/img/logs.jpeg" class="rounded" alt="Logs.jpg" width="180" height="140"></a>
+                    @await Html.PartialAsync("_OpenModalByLog")
+            }
+         }
+
+        
+            <a class="mx-2 text-decoration-none" asp-controller="Home" asp-action="ShowHelp"><img src="~/img/FAQ.jpg" class="rounded" alt="FAQ.jpg" width="180" height="140"></a>
+
+        </div>
+    </div>
+    
+    @{
+        if (Model != null && Model.ToList().Count!=0 &&(IsAdmin || IsUser || IsReviewer))
+        {
+            <h4 class="mt-5 text-center">Ход заполения плана-отчета по текущему ремонту за @Model.ToList()[0].Year.Years </h4> 
+
+        <table class="table mt-4 text-center table-bordered align-middle">
+            <tr class="Font_Title">
+                <td>Филиал</td>
+                <td>План</td>
+                <td>1-й квартал</td>
+                <td>2-й квартал</td>
+                <td>3-й квартал</td>
+                <td>4-й квартал</td>
+            </tr>
+
+            @if(Model!=null)
+            {
+                 foreach (var el in Model)
+                {                   
+                    <tr>
+                        <td class="Font_Title" id="background_dark">@el.Department.NameDepartment</td>
+                            <td id=@showBlocking(el.Blocking_Array[0])>
+                                <div class="input-group justify-content-center overflow-auto ">
+                                    <span class="input-group-text bg-white">
+                                        @getTitleStatus(el.AssertionPlan_Array)
+                                    </span>
+                                    <span class="input-group-text bg-light">
+                                     <a class="text-dark text-decoration-none" asp-controller="View" asp-action="ShowJornalDepartment" asp-all-route-data='new Dictionary<string,string>{{"Section","План"},{"Block","Весь год"},{"Year", @el.Year.Years.ToString()},{"Department", @el.Department.NameDepartment},{"Group","Все группы"}}'>
+                                        <img title="Просмотреть" src="~/img/search.svg">
+                                     </a>
+                                    </span>
+                                        @if (showButtenConfirm(el.AssertionPlan_Array))
+                                        {
+                                        <span class="input-group-text bg-success">
+                                            <a class="button" asp-controller="Status" asp-action="Confirm" asp-route-ID="@el.IDStatus" asp-route-block="План" onclick="return ShowWindowConfirm('Продолжить согласование Плана (@el.Department.NameDepartment)?')"><img title="Согласовать" src="~/img/check-square.svg"></a>
+                                        </span>
+                                        }
+
+                                 </div>
+                         </td>
+                        <td id=@showBlocking(el.Blocking_Array[1])><div class="input-group justify-content-center">
+                                        <span class="input-group-text bg-white">
+                                            @getTitleStatus(el.Assertion_1_CalendarQuarter_Array)
+                                        </span>
+                                        <span class="input-group-text bg-light">
+                                           <a class="text-dark text-decoration-none" asp-controller="View" asp-action="ShowJornalDepartment" asp-all-route-data='new Dictionary<string,string>{{"Section","Отчет"},{"Block","1-й квартал"},{"Year",  @el.Year.Years.ToString()},{"Department", @el.Department.NameDepartment},{"Group","Все группы"}}'>
+                                                <img title="Просмотреть" src="~/img/search.svg">
+                                           </a>
+                                        </span>
+                                    @if (el.AssertionPlan_Array[3] == true && showButtenConfirm(el.Assertion_1_CalendarQuarter_Array))
+                                        {
+                                        <span class="input-group-text bg-success">
+                                            <a class="button" asp-controller="Status" asp-action="Confirm" asp-route-ID="@el.IDStatus" asp-route-block="1-й квартал" onclick="return ShowWindowConfirm('Продолжить согласование Отчета по 1 кварталу (@el.Department.NameDepartment)?')"><img title="Согласовать" src="~/img/check-square.svg"></a>
+                                            </span>
+                                        }
+
+                                    </div>
+                                   
+ 
+                            </td>
+                        <td id=@showBlocking(el.Blocking_Array[2])>
+                                    <div class="input-group justify-content-center">
+                                        <span class="input-group-text bg-white">
+                                    @getTitleStatus(el.Assertion_2_CalendarQuarter_Array)
+                                        </span>
+                                        <span class="input-group-text bg-light">
+                                        <a class="text-dark text-decoration-none" asp-controller="View" asp-action="ShowJornalDepartment" asp-all-route-data='new Dictionary<string,string>{{"Section","Отчет"},{"Block","2-й квартал"},{"Year",  @el.Year.Years.ToString()},{"Department", @el.Department.NameDepartment},{"Group","Все группы"}}'>
+                                            <img title="Просмотреть" src="~/img/search.svg">
+                                        </a>
+                                        </span>
+                                        @if (el.Assertion_1_CalendarQuarter_Array[3] == true && showButtenConfirm(el.Assertion_2_CalendarQuarter_Array))
+                                        {
+                                        <span class="input-group-text bg-success">
+                                            <a class="button" asp-controller="Status" asp-action="Confirm" asp-route-ID="@el.IDStatus" asp-route-block="2-й квартал" onclick="return ShowWindowConfirm('Продолжить согласование Отчета по 2 кварталу (@el.Department.NameDepartment)?')"><img title="Согласовать" src="~/img/check-square.svg"></a>
+                                        </span>
+                                        }
+                                    </div>
+                            </td>
+                        <td id=@showBlocking(el.Blocking_Array[3])><div class="input-group justify-content-center">
+                                        <span class="input-group-text bg-white">
+                                            @getTitleStatus(el.Assertion_3_CalendarQuarter_Array)
+                                        </span>
+                                        <span class="input-group-text bg-light">
+                                        <a class="text-dark text-decoration-none" asp-controller="View" asp-action="ShowJornalDepartment" asp-all-route-data='new Dictionary<string,string>{{"Section","Отчет"},{"Block","3-й квартал"},{"Year",  @el.Year.Years.ToString()},{"Department", @el.Department.NameDepartment},{"Group","Все группы"}}'>
+                                            <img title="Просмотреть" src="~/img/search.svg">
+                                        </a>
+                                        </span>
+                                        @if (el.Assertion_2_CalendarQuarter_Array[3] == true && showButtenConfirm(el.Assertion_3_CalendarQuarter_Array))
+                                        {
+                                        <span class="input-group-text bg-success">
+                                            <a class="button" asp-controller="Status" asp-action="Confirm" asp-route-ID="@el.IDStatus" asp-route-block="3-й квартал" onclick="return ShowWindowConfirm('Продолжить согласование Отчета по 3 кварталу (@el.Department.NameDepartment)?')"><img title="Согласовать" src="~/img/check-square.svg"></a>
+                                        </span>
+                                        }
+
+                                    </div>
+                            </td>
+
+                        <td id=@showBlocking(el.Blocking_Array[4])><div class="input-group justify-content-center">
+                                        <span class="input-group-text bg-white">
+                                            @getTitleStatus(el.Assertion_4_CalendarQuarter_Array)
+                                        </span>
+                                        <span class="input-group-text bg-light">
+                                            <a class="text-dark text-decoration-none" asp-controller="View" asp-action="ShowJornalDepartment" asp-all-route-data='new Dictionary<string,string>{{"Section","Отчет"},{"Block","4-й квартал"},{"Year",  @el.Year.Years.ToString()},{"Department", @el.Department.NameDepartment},{"Group","Все группы"}}'>
+                                                <img title="Просмотреть" src="~/img/search.svg">
+                                            </a>
+                                        </span>
+                                    @if (el.Assertion_3_CalendarQuarter_Array[3] == true && showButtenConfirm(el.Assertion_4_CalendarQuarter_Array))
+                                        {
+                                        <span class="input-group-text bg-success">
+                                            <a class="button" asp-controller="Status" asp-action="Confirm" asp-route-ID="@el.IDStatus" asp-route-block="4-й квартал" onclick="return ShowWindowConfirm('Продолжить согласование Отчета по 4 кварталу (@el.Department.NameDepartment)?')"><img title="Согласовать" src="~/img/check-square.svg"></a>
+                                        </span>
+                                        }
+
+                                    </div>
+                            </td>
+                    </tr>
+
+                        
+                }
+            }
+           
+
+            </table>
+        }
+
+    }
+
+
+
+</div>

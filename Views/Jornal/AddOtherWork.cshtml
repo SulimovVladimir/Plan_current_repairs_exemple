@@ -1,0 +1,41 @@
+﻿@model Plan_current_repairs.Data.Models.OtherWork
+@{
+    ViewBag.Title = "Добавление дополнительной работы";
+    Layout = "_Layout";
+}
+
+
+@*<div class="validation-summary-errors" style="margin-left: 50px" asp-validation-summary="ModelOnly"></div>*@
+<form asp-action="AddOtherWork" asp-controller="Jornal" style="margin-left: 50px ; margin-right: 50px">
+    <input type="hidden" asp-for="OtherWorkID" />
+    <input type="hidden" asp-for="DepartmentID" value="@ViewBag.DepartmentID" />
+    <input type="hidden" asp-for="YearID" value="@ViewBag.YearID" />
+
+    <div class="form-group">
+        <label asp-for="NameOtherWork" class="control-label">Наименование работы</label><br />
+        <input type="text" asp-for="NameOtherWork" class="form-control" />
+        @*<span class="field-validation-error" asp-validation-for="NameOtherWork"></span>*@
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="DiscriptionOtherWork" class="control-label">Описание</label><br />
+        <input type="text" asp-for="DiscriptionOtherWork" class="form-control" />
+        @*<span asp-validation-for="DiscriptionOtherWork" class="field-validation-error"></span>*@
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="PeriodicityOtherWork" class="control-label">Периодичность</label><br />
+        <input type="text" asp-for="PeriodicityOtherWork" class="form-control" />
+        @*<span asp-validation-for="PeriodicityOtherWork" class="field-validation-error"></span>*@
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="UnitOtherWork" class="control-label">Единица измерения</label><br />
+        <input type="text" asp-for="UnitOtherWork" class="form-control" />
+        @*<span asp-validation-for="UnitOtherWork" class="field-validation-error"></span>*@
+    </div><br />
+
+    <div class="form-group">
+        <input type="submit" value="Добавить" class="btn-dark" />
+    </div>
+</form>

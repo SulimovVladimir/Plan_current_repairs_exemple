@@ -1,0 +1,19 @@
+﻿<div class="modal" id="ModalDictionary">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+
+                <button type="button" class="btn-close position-absolute end-0" data-bs-dismiss="modal" aria-label="Закрыть"></button><br />
+                <h5>Выберите нужный словарь?</h5>
+            </div>
+
+            <div class="modal-footer">
+
+                <a class="p-1 px-3 text-decoration-none bg-dark text-white rounded-3" asp-controller="AdminEmployee" asp-action="ListEmployee">Сотрудники</a>
+                <a class="p-1 px-3 text-decoration-none bg-dark text-white rounded-3" asp-controller="AdminDictionarySector" asp-action="IndexDictionarySector" asp-route-currentDepartment="@Context.User.FindFirst("IDDepartment").Value">Участки</a>
+
+            </div>
+        </div>
+    </div>
+</div>

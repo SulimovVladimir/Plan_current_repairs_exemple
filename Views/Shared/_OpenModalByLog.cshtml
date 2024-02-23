@@ -1,0 +1,19 @@
+﻿<div class="modal" id="ModalLog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-body">
+
+                <button type="button" class="btn-close position-absolute end-0" data-bs-dismiss="modal" aria-label="Закрыть"></button><br />
+                <h5>Какие логи вам нужны?</h5>
+            </div>
+
+            <div class="modal-footer">
+
+                <a class="p-1 text-decoration-none bg-dark text-white rounded-3" asp-controller="Home" asp-action="ShowLogs">Общие логи</a>
+                <a class="p-1 text-decoration-none bg-dark text-white rounded-3" asp-controller="Home" asp-action="ShowLogsException">Логи ошибок</a>
+
+            </div>
+        </div>
+    </div>
+</div>

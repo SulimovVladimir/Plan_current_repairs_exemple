@@ -1,0 +1,49 @@
+﻿@using Plan_current_repairs.Data.Models
+@model List<Log>
+
+@{
+    ViewBag.Title = "Логи";
+    Layout = "_Layout";
+
+    string showColor(string LogLevel)
+    {
+        switch(LogLevel)
+        {
+            case "Information":
+                return "bg-success text-white";
+            case "Warning":
+                return "bg-warning";
+            case "Error":
+                return "text-danger";
+            case "Critical":
+                return "text-light bg-danger";
+        }
+    return "";
+    }
+}
+
+
+
+<table class="table text-center w-100 table-striped">
+   <thead class="fw-bold">    
+    <tr>
+            <td>LogLevel</td>
+            <td>Category</td>
+            <td>Date</td>
+            <td>Message</td>
+        </tr>
+    </thead>
+    @foreach (var item in Model)
+{
+    <tr>
+            <td class="@showColor(item.LogLevel)">
+            @item.LogLevel</td>
+            <td>@item.Category</td>
+            <td>@item.Date</td>
+            <td class="text-start">@item.Message</td>
+    </tr>
+}
+</table>
+
+
+

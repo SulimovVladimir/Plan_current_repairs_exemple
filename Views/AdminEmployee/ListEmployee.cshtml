@@ -1,0 +1,73 @@
+﻿@using Plan_current_repairs.Data.Models
+@model IEnumerable<Employee>
+
+@{
+    ViewBag.Title = "Сотрудники";
+    Layout = "_Layout";
+}
+
+@await Html.PartialAsync("_OpenModalWindowByAddEmployee")
+
+<div class="container mb-5">
+
+    <div class="row" style="text-indent: 25px">
+
+        <div class="col-lg-1"></div>
+        <div class="col-lg-10 col-md-12">
+            <div class="mx-3 mb-3">
+                <h4 class="float-start">@Model.ToList()[0].Department.NameDepartment</h4>
+                <input type="submit" value="Добавить сотрудника" class="btn-dark float-end" data-bs-toggle="modal" data-bs-target="#ModalAddEmployee"
+                       onclick="return ShowWindowConfirm('Внимание, несохраненные данные будут удалены. Продолжить?')" />
+            </div>
+
+            <form name="My" class="ms-3 me-3" asp-controller="AdminEmployee" asp-action="ListEmployee">
+
+                <table class="table mt-4">
+                    <tr class="Font_Title Dark_Background">
+                        <td>ФИО</td>
+                        <td>Должность</td>
+                        <td></td>
+                    </tr>
+
+                    @{
+                        for (int i = 0; i < Model.Count(); i++)
+                        {
+                            <input type="hidden" asp-for="@Model.ToList()[i].ID" />
+                            <tr>
+                                <td>@Model.ToList()[i].FullName</td>
+                                <td><input class="w-100" type="text" asp-for="@Model.ToList()[i].Post" /></td>
+                                @{
+                                    if (@Model.ToList()[i].Account == "none")
+                                    {
+                                        <td>
+                                            <a type="button" title="Удалить сотрудника" value="" style="width:35px; height:30px; background-image: url('../img/x-circle-fill.svg'); background-repeat: no-repeat; background-position:center"
+                                               class="float-end border-1" asp-controller="AdminEmployee" asp-action="DeleteEmployeeWithoutAccount" asp-route-EmployeeID="@Model.ToList()[i].ID"
+                                               onclick="return ShowWindowConfirm('Внимание, несохраненные данные будут удалены. Продолжить?')"></a>
+                                        </td>
+                                        
+                                    }
+                                    else
+                                    {
+                                          <td></td>;
+                                    }
+                                }
+                                                
+                            </tr>
+                        }
+                    }
+                </table>
+
+                <div class="text-end mx-3">
+                    <input type="submit" value="Сохранить" class="btn-dark ms-3" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div class="col-lg-1"></div>
+
+</div>
+
+

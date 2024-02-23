@@ -1,0 +1,37 @@
+﻿
+@model Plan_current_repairs.Data.Models.GroupNameOfWorks
+
+@{
+    ViewBag.Title = "Группы работ";
+    Layout = "_Layout";
+}
+
+<form name="My" class="ms-3 me-3" >
+    <div class="input-group">
+        <input type="submit" value="Добавить группу работ" class="btn-dark" asp-controller="AdminGroupOfWorks" asp-action="CardGroup" />
+    </div>
+
+    <table class="table mt-4">
+        <tr class="Font_Title Dark_Background"><td>Название группы</td></tr>
+        @{int number_string = 1; }
+        @foreach (var el in ViewBag.ModelGroup)
+        {
+            @if (number_string % 2 == 0)
+            {
+                <tr class="Dark_Background" ondblclick="editRecord(@el.GroupID)"><td>@el.NameGroup</td></tr>
+            }
+            else
+            {
+                <tr ondblclick="editRecord(@el.GroupID)"><td>@el.NameGroup</td></tr>
+            }
+            number_string++;
+        }
+    </table>
+</form>
+
+<script>
+    function editRecord(s) {
+
+        location.href = "@Url.Action("EditGroupOfWorks", "AdminGroupOfWorks", new {GroupID= "cid" })".replace("cid", s.toString());
+    }
+</script>

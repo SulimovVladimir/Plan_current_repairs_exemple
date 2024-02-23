@@ -1,0 +1,180 @@
+﻿@using System.Linq;
+@using Plan_current_repairs.Data.VIewModels;
+@model IEnumerable<IGrouping<Plan_current_repairs.Data.Models.GroupNameOfWorks, Plan_current_repairs.Data.VIewModels.RecordsByJornal>>
+
+@{
+    ViewBag.Title = "Просмотр сводного плана-отчета прочих работ";
+    Layout = "_Layout";
+}
+
+<div>@await Html.PartialAsync("_headerJornalDepartment", new string[] { ViewBag.Menu[0], ViewBag.Menu[1], ViewBag.Menu[2], ViewBag.Menu[3], ViewBag.Menu[4], ViewBag.settings[0], ViewBag.settings[1], })</div>
+
+
+<div class="d-print-none">
+    @await Component.InvokeAsync("MenuView", new { Section = ViewBag.Menu[0], Block = ViewBag.Menu[1], Group = ViewBag.Menu[2], Year = ViewBag.Menu[3], Department = ViewBag.Menu[4], master = ViewBag.master })
+</div>
+@{ string ShowSpecification(string discription = null, string periodicity = null, string unit = null)
+    {
+        string temp = $"Описание: {discription} \n\nПереодичность: {periodicity}\n\nЕдиница измерения: {unit}";
+        return temp;
+    }
+}
+
+@{ string display_All = (ViewBag.Flags[1]) ? "d-none" : "";
+
+    string display_1 = (ViewBag.Menu[1] != "Весь год" && ViewBag.Menu[1] != "1-й квартал") ? "d-none" : "";
+    string display_2 = (ViewBag.Menu[1] != "Весь год" && ViewBag.Menu[1] != "2-й квартал") ? "d-none" : "";
+    string display_3 = (ViewBag.Menu[1] != "Весь год" && ViewBag.Menu[1] != "3-й квартал") ? "d-none" : "";
+    string display_4 = (ViewBag.Menu[1] != "Весь год" && ViewBag.Menu[1] != "4-й квартал") ? "d-none" : "";
+
+    string display_Fact = (ViewBag.Menu[0] == "Сводный план") ? "d-none" : "";
+}
+
+
+    <div style="max-width:100vw; overflow:visible; overflow-y:visible">
+        <table class="table table-hover table-sm" style="margin-left: 10px; margin-right: 10px">
+            <thead class="bg-light sticky-top" align="center">
+                @if (ViewBag.Menu[0] == "Сводный план")          //загаловок для плана
+                {
+                    <tr>
+                        @if (ViewBag.Flags[0]) //развернуть описание
+                        {
+                            <th style="min-width:25vw" valign="middle">Наименование работ</th>
+                            <th>Описание</th>
+                            <th>Переодичность</th>
+                            <th>Ед. измерения</th>
+                        }
+                        else     //свернуть описание
+                        {
+                            <th style="min-width:25vw" valign="middle" title="@ShowSpecification()">Наименование работ</th>
+                        }
+
+                        <th>Год</th>
+                        <th class="@display_1">1-й квартал</th>
+                        <th class="@display_All @display_1">Январь</th>
+                        <th class="@display_All @display_1">Февраль</th>
+                        <th class="@display_All @display_1">Март</th>
+                        <th class="@display_2">2-й квартал</th>
+                        <th class="@display_All @display_2">Апрель</th>
+                        <th class="@display_All @display_2">Май</th>
+                        <th class="@display_All @display_2">Июнь</th>
+                        <th class="@display_3">3-й квартал</th>
+                        <th class="@display_All @display_3">Июль</th>
+                        <th class="@display_All @display_3">Август</th>
+                        <th class="@display_All @display_3">Сентябрь</th>
+                        <th class="@display_4">4-й квартал</th>
+                        <th class="@display_All @display_4">Октябрь</th>
+                        <th class="@display_All @display_4">Ноябрь</th>
+                        <th class="@display_All @display_4">Декабрь</th>
+
+                    </tr>
+                }
+                else            //заголовок для отчета
+                {
+                    <tr valign="middle">
+                        @if (ViewBag.Flags[0]) //развернуть описание
+                        {
+                            <th style="min-width:25vw" rowspan="2">Наименование работ</th>
+                            <th rowspan="2">Описание</th>
+                            <th rowspan="2">Переодичность</th>
+                            <th rowspan="2">Ед. измерения</th>
+                        }
+                        else     //свернуть описание
+                        {
+                            <th rowspan="2" style="min-width:25vw" title="@ShowSpecification()">Наименование работ</th>
+                        }
+
+                        <th colspan="2">Год</th>
+                        <th colspan="2" class="@display_1">1-й квартал</th>
+                        <th colspan="2" class="@display_All @display_1">Январь</th>
+                        <th colspan="2" class="@display_All @display_1">Февраль</th>
+                        <th colspan="2" class="@display_All @display_1">Март</th>
+                        <th colspan="2" class="@display_2">2-й квартал</th>
+                        <th colspan="2" class="@display_All @display_2">Апрель</th>
+                        <th colspan="2" class="@display_All @display_2">Май</th>
+                        <th colspan="2" class="@display_All @display_2">Июнь</th>
+                        <th colspan="2" class="@display_3">3-й квартал</th>
+                        <th colspan="2" class="@display_All @display_3">Июль</th>
+                        <th colspan="2" class="@display_All @display_3">Август</th>
+                        <th colspan="2" class="@display_All @display_3">Сентябрь</th>
+                        <th colspan="2" class="@display_4">4-й квартал</th>
+                        <th colspan="2" class="@display_All @display_4">Октябрь</th>
+                        <th colspan="2" class="@display_All @display_4">Ноябрь</th>
+                        <th colspan="2" class="@display_All @display_4">Декабрь</th>
+
+
+                    </tr>
+
+                    <tr>
+
+                        <th>План</th>
+                        <th>Факт</th>
+                        <th class="@display_1">План</th>
+                        <th class="@display_1">Факт</th>
+                        <th class="@display_All @display_1">План</th>
+                        <th class="@display_All @display_1">Факт</th>
+                        <th class="@display_All @display_1">План</th>
+                        <th class="@display_All @display_1">Факт</th>
+                        <th class="@display_All @display_1">План</th>
+                        <th class="@display_All @display_1">Факт</th>
+                        <th class="@display_2">План</th>
+                        <th class="@display_2">Факт</th>
+                        <th class="@display_All @display_2">План</th>
+                        <th class="@display_All @display_2">Факт</th>
+                        <th class="@display_All @display_2">План</th>
+                        <th class="@display_All @display_2">Факт</th>
+                        <th class="@display_All @display_2">План</th>
+                        <th class="@display_All @display_2">Факт</th>
+                        <th class="@display_3">План</th>
+                        <th class="@display_3">Факт</th>
+                        <th class="@display_All @display_3">План</th>
+                        <th class="@display_All @display_3">Факт</th>
+                        <th class="@display_All @display_3">План</th>
+                        <th class="@display_All @display_3">Факт</th>
+                        <th class="@display_All @display_3">План</th>
+                        <th class="@display_All @display_3">Факт</th>
+                        <th class="@display_4">План</th>
+                        <th class="@display_4">Факт</th>
+                        <th class="@display_All @display_4">План</th>
+                        <th class="@display_All @display_4">Факт</th>
+                        <th class="@display_All @display_4">План</th>
+                        <th class="@display_All @display_4">Факт</th>
+                        <th class="@display_All @display_4">План</th>
+                        <th class="@display_All @display_4">Факт</th>
+
+
+                    </tr>
+                }
+            </thead>
+
+            @foreach (var Group in Model)
+            {
+                <tr class="bg-warning"><td colspan="100%"><h4>@Group.Key.NameGroup</h4></td></tr>
+
+                var groupName = Group.GroupBy(x => x.nameOfWorks.NameOfWork);
+
+                foreach (var Name in groupName)
+                {
+                    ViewBag.Display = new string[] { display_All, display_1, display_2, display_3, display_4, display_Fact };
+
+                    if (Name.ToList()[0].nameOfWorks.TypeRecords == "без участков")
+                    {
+                        @await Html.PartialAsync("_ShowRecordsNoArea", Name);
+                        continue;
+                    }
+
+                    if (Name.ToList()[0].nameOfWorks.TypeRecords == "с участками")
+                    {
+                        @await Html.PartialAsync("_ShowRecordsWithArea", Name);
+                        continue;
+                    }
+
+                    if (Name.ToList()[0].nameOfWorks.TypeRecords == "с участками и параметрами")
+                    {
+                        @await Html.PartialAsync("_ShowRecordsWithAreaAndParametrs", Name);
+                    }
+                }
+            }
+
+        </table>
+    </div>

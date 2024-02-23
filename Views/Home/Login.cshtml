@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Страница входа";
+    Layout = "_Layout";
+}
+
+<form method='post' style="margin-left: 50px ; margin-right: 50px ; width:300px" class="position-relative">
+    <h5>Авторизация</h5>
+   
+    <div class="input-group">
+        <label class="input-group-text">Логин</label>
+        <input type="text" name='account' class="form-control" />
+    </div><br />
+    <div class="input-group">
+        <label class="input-group-text">Пароль</label>
+        <input type="password" name='password' class="form-control" />
+        
+    </div><br />
+    
+    <div class="form-group position-absolute end-0">
+        <input type="submit" value="Отправить" class="btn-dark" />
+    </div>
+</form>

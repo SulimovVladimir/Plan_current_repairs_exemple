@@ -1,0 +1,19 @@
+﻿@using Plan_current_repairs.Data.Models
+@model string[]
+
+@{
+    ViewBag.Title = "Логи";
+    Layout = "_Layout"; 
+
+    string showColor (string text)
+    {
+        if (text.StartsWith("Error-----")) return "text-danger";
+        else return "";
+    }
+}
+<div class="mx-3 lh-1">
+    @foreach (var item in Model)
+    {
+        <div class="@showColor(item)">@item <br /></div>
+    }
+</div>

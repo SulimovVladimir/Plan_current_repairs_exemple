@@ -1,0 +1,160 @@
+﻿@model List<Plan_current_repairs.Data.VIewModels.OtherJornalByFact>
+
+@{
+    ViewBag.Title = "Заполнение отчета по прочим работам";
+    Layout = "_Layout";
+}
+
+
+@await Component.InvokeAsync("Menu", new { Section = ViewBag.Menu[0], Block = ViewBag.Menu[1], Group = ViewBag.Menu[2], Year = ViewBag.Menu[3], Department = ViewBag.Menu[4] })
+
+@{ string ShowSpecification(string discription = null, string periodicity = null, string unit = null)
+    {
+        string temp = $"Описание: {discription} \n\nПереодичность: {periodicity}\n\nЕдиница измерения: {unit}";
+        return temp;
+    }
+}
+
+<form id="My" style="margin-left: 10px; margin-right: 10px" method="post" asp-controller="Jornal" asp-action="SetOtherJornalFact">
+
+    <table class="table table-hover table-striped table-sm mx-auto" style="margin-left: 10px">
+        <thead class="bg-light sticky-top" align="center">
+            @*Шапка 1 строка*@
+            <tr>
+                <th class="width_30" valign="middle" rowspan="2" title="@ShowSpecification()">Наименование работ</th>
+                <th colspan="2">Год</th>
+                <th colspan="2">@ViewBag.Month[0]</th>
+                <th colspan="2">@ViewBag.Month[1]</th>
+                <th colspan="2">@ViewBag.Month[2]</th>
+                <th colspan="2">@ViewBag.Month[3]</th>
+                <th class="width_15" valign="middle" rowspan="2">Примечание</th>
+                <th class="" valign="middle" colspan="2" rowspan="2">Акты</th>
+            </tr>
+            @*Шапка 2 строка*@
+            <tr>
+                <th>План</th>
+                <th>Факт</th>
+                <th>План</th>
+                <th>Факт</th>
+                <th>План</th>
+                <th>Факт</th>
+                <th>План</th>
+                <th>Факт</th>
+                <th>План</th>
+                <th>Факт</th>
+            </tr>
+        </thead>
+
+
+        @{byte a = 0, b = 0;
+
+            switch (ViewBag.Month[0])
+            {
+                case "1-й квартал": a = 0; b = 3; break;
+                case "2-й квартал": a = 3; b = 6; break;
+                case "3-й квартал": a = 6; b = 9; break;
+                case "4-й квартал": a = 9; b = 12; break;
+            }
+        }
+
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <tr align="center">
+
+                <td>
+                    <div class="input-group">
+                        <label class="sector table_value float-end form-control" title="@ShowSpecification(@Model[i].otherWork.DiscriptionOtherWork,@Model[i].otherWork.PeriodicityOtherWork, @Model[i].otherWork.UnitOtherWork)">
+                            @Model[i].otherWork.NameOtherWork</label>
+
+                        <a title="Удалить дополнительную работу" value="" asp-action="DeleteRecordOtherWork" asp-controller="Jornal" asp-route-OtherWorkID="@Model[i].otherWork.OtherWorkID" class="input-group-text float-end py-1" onclick="return ShowWindowConfirm('Вы точно хотите удалить дополнительную работу?')"> <img src="~/img/x-circle-fill.svg" /> </a>
+                    </div>
+                </td>
+
+                <td>@Model[i].OtherPlanArray.Sum()</td>
+                <td>@Model[i].OtherFactArray.Sum()</td>
+                <td>@Model[i].OtherPlanArray.Skip(a).Take(3).Sum()</td>
+                <td>@Model[i].OtherFactArray.Skip(a).Take(3).Sum()</td>
+                @for (int j = a; j < b; j++)
+                {
+                    <td>@Model[i].OtherPlanArray[j]</td>
+                    <td align="center" class="table_value"><input class="w-100" style="text-align:center" onfocus='this.select()' asp-for="@Model[i].OtherFactArray[j]"></td>
+                }
+
+                @for (int n = 0; n < 12; n++)
+                {
+                    if (n >= a && n < b) continue;
+                    <input type="hidden" asp-for="@Model[i].OtherFactArray[n]" />
+                }
+                <td align="center" class="table_value">
+                    <input type="hidden" asp-for="@Model[i].otherWork.OtherWorkID" />
+                    <textarea class="autoGrow w-100" style="text-align:center" oninput="auto_grow(this)" asp-for="@Model[i].otherWork.NoteOtherWork">@Model[i].otherWork.NoteOtherWork</textarea>
+                </td>
+
+                <td align="center" class="table_value width_10">
+
+                    @{
+                        foreach (var item in Model[i].otherWork.ActOfWorks)
+                        {
+                            <button type="button" title="Просмотреть или открепить акт выполненных работ" class="dropdown d-print-none text-dark text-nowrap fw-normal bg-light ms-1 mt-1 px-1 border-1 border-secondary border" data-bs-toggle="dropdown" aria-expanded="false">
+                                @item.NumberAct
+                            </button>
+
+                            <ul class="dropdown-menu border-0 text-decoration-none text-dark align-content-center" style="text-align:center">
+                                <li class="dropdown-item">
+                                    <a asp-action="ViewCardAct" title="Просмотреть акт выполненных работ" asp-controller="Act" asp-route-ActID="@item.IDAct" class="text-decoration-none text-dark">
+                                        Просмотреть
+                                    </a>
+                                </li>
+
+                                <li class="dropdown-item">
+                                    <a asp-action="UnpinCardAct" title="Открепить акт выполенных работ от текущей работы" asp-controller="Act" asp-route-ActID="@item.IDAct" asp-route-RecordID="0" asp-route-OtherRecordID="@Model[i].otherWork.OtherWorkID" class="text-decoration-none text-dark">
+                                        Открепить
+                                    </a>
+                                </li>
+                            </ul>
+                        }
+                    }
+
+                </td>
+                <td>
+                    <div class="float-end dropstart d-print-none" style="z-index:1020">
+                        <button type="button" title="Добавить акт выполненных работ" class=" border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="~/img/file-earmark-plus-fill.svg">
+                        </button>
+                        <ul class="dropdown-menu border-0" style="overflow-y:scroll; max-height:80vh">
+                            <li class="dropdown-item">
+                                <input class="border-0 bg-transparent" type="submit" value="Создать новый акт" asp-action="CreateCardActByOtherWork" asp-controller="Jornal" asp-route-departmentID="@Model[i].otherWork.DepartmentID"
+                                       asp-route-recordOtherID="@Model[i].otherWork.OtherWorkID" asp-route-YearID="@Model[i].otherWork.YearID" asp-route-currentBlock="@ViewBag.Menu[1]" />
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            @{
+                                foreach (var item in ViewBag.AllActForDepartment)
+                                {
+                                    <li class="dropdown-item text-center">
+                                        <input class="border-0 bg-transparent" type="submit" value="@item.NumberAct" asp-action="AddActToJornalOtherWork" asp-controller="Jornal" asp-route-actID="@item.IDAct" asp-route-recordOhterID="@Model[i].otherWork.OtherWorkID" />
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+    <input type="submit" value="Добавить дополнительную работу" class="btn-dark" asp-controller="Jornal" asp-action="TempAddOtherWork" asp-route-Department="@ViewBag.Menu[4]" asp-route-Year="@ViewBag.Menu[3]" />
+
+</form>
+
+<script>
+    function auto_grow(el) {
+        el.style.height = "30px";
+        el.style.height = (el.scrollHeight + 2) + "px";
+    }
+
+    let textarea = document.getElementsByClassName('autoGrow');
+    for (let el of textarea) {
+        el.style.height = "30px";
+        el.style.height = (el.scrollHeight + 2) + "px";
+    }
+</script>
+

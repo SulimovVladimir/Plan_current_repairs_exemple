@@ -1,0 +1,725 @@
+﻿@model List<Plan_current_repairs.Data.VIewModels.RecordsByJornal>
+
+@{
+    ViewBag.Title = "Заполнение отчета";
+    Layout = "_Layout";
+}
+
+@await Component.InvokeAsync("Menu", new { Section = ViewBag.Menu[0], Block = ViewBag.Menu[1], Group = ViewBag.Menu[2], Year = ViewBag.Menu[3], Department = ViewBag.Menu[4] })
+
+@{ IEnumerable<IGrouping<string, Plan_current_repairs.Data.VIewModels.RecordsByJornal>> GroupjornalByFact = Model.GroupBy(x => x.nameOfWorks.NameOfWork);}
+
+@{
+    string ShowSpecification(string discription = null, string periodicity = null, string unit = null)
+    {
+        string temp = $"Описание: {discription} \n\nПереодичность: {periodicity}\n\nЕдиница измерения: {unit}";
+        return temp;
+    }
+}
+
+<form id="My" style="margin-left: 10px; margin-right: 10px" method="post" asp-controller="Jornal" asp-action="SetJornalFact">
+
+    <table class="table table-hover table-striped table-sm mx-auto" style="margin-left: 10px; margin-right: 10px">
+        <thead class="bg-light sticky-top" align="center">
+            @*Шапка 1 строка*@
+            <tr>
+                <th class="width_30" valign="middle" rowspan="2" title="@ShowSpecification()">Наименование работ</th>
+                <th colspan="2">Год</th>
+                <th colspan="2">@ViewBag.Month[0]</th>
+                <th colspan="2">@ViewBag.Month[1]</th>
+                <th colspan="2">@ViewBag.Month[2]</th>
+                <th colspan="2">@ViewBag.Month[3]</th>
+                <th class="width_15" valign="middle" rowspan="2">Примечание</th>
+                <th class="" valign="middle" colspan="2" rowspan="2">Акты</th>
+            </tr>
+            @*Шапка 2 строка*@
+            <tr>
+                <th>План</th>
+                <th>Факт</th>
+                <th>План</th>
+                <th>Факт</th>
+                <th>План</th>
+                <th>Факт</th>
+                <th>План</th>
+                <th>Факт</th>
+                <th>План</th>
+                <th>Факт</th>
+            </tr>
+        </thead>
+
+
+        @{byte a = 0, b = 0;
+
+            switch (ViewBag.Month[0])
+            {
+                case "1-й квартал": a = 0; b = 3; break;
+                case "2-й квартал": a = 3; b = 6; break;
+                case "3-й квартал": a = 6; b = 9; break;
+                case "4-й квартал": a = 9; b = 12; break;
+            }
+        }
+
+        @*Вывод значений*@
+        @for (int i = 0; i < GroupjornalByFact.ToList().Count; i++)
+        {
+            //Вывод наименований работ с участками
+            if (GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.TypeRecords == "с участками")
+            {
+                //суммирующая строка, участки не добавлены
+                if (GroupjornalByFact.ToList()[i].ToList()[0].FactArray == null)
+                {
+                    int el = 0;
+                    for (int g = 0; g < Model.ToList().Count; g++)
+                    {
+                        if (Model.ToList()[g].nameOfWorks.WorkID == GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.WorkID)
+                        {
+                            el = g;
+                            break;
+                        }
+                    }
+                    <tr align="center" class="fw-bold">
+                        <td align="left" title="@ShowSpecification(GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Discription,
+                            GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Periodicity,
+                            GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Unit)">
+                            @GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.NameOfWork
+                            <input type="submit" value="" style="width:25px; background-image: url('../img/plus-circle-fill.svg'); background-repeat: no-repeat;" title="Добавить участок" 
+                            class="float-end border-0 bg-transparent" asp-controller="Jornal" asp-action="AddRecordToJornal" asp-route-Department="@ViewBag.Menu[4]" asp-route-Year="@ViewBag.Menu[3]" 
+                            asp-route-WorkID="@GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.WorkID" />
+                        </td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td><input type="hidden" asp-for="@Model.ToList()[el].nameOfWorks.WorkID" /></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                }
+
+                //суммирующая строка, участки добавлены
+                else
+                {
+                    <tr align="center" class="fw-bold">
+                        <td align="left" title="@ShowSpecification(GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Discription,
+                            GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Periodicity,
+                            GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Unit)">
+                            <input type="submit" value="" style="width:25px; background-image: url('../img/plus-circle-fill.svg'); background-repeat: no-repeat;" title="Добавить участок" class="float-end border-0 bg-transparent" asp-controller="Jornal" asp-action="AddRecordToJornal" asp-route-Department="@ViewBag.Menu[4]" asp-route-Year="@ViewBag.Menu[3]" asp-route-WorkID="@GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.WorkID" />
+                            @GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.NameOfWork
+                            
+                        </td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanArray.Sum()),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactArray.Sum()),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanArray.Skip(a).Take(3).Sum()),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactArray.Skip(a).Take(3).Sum()),3)</td>
+                        @for (int n = a; n < b; n++)
+                        {
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanArray[n]),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactArray[n]),3)</td>
+                        }
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                }
+
+                //вывод каждого участка отдельной строкой
+                if (GroupjornalByFact.ToList()[i].ToList()[0].jornal != null)
+                {
+
+                    for (int y = 0; y < GroupjornalByFact.ToList()[i].ToList().Count; y++)
+                    {
+
+                        int el = 0;
+                        for (int g = 0; g < Model.ToList().Count; g++)
+                        {
+                            if (Model.ToList()[g].jornal != null)
+                            {
+                                if (GroupjornalByFact.ToList()[i].ToList()[y].jornal.NumberRecordingID == Model.ToList()[g].jornal.NumberRecordingID)
+                                {
+                                    el = g;
+                                    break;
+                                }
+                            }
+                        }
+                        {
+
+                            <tr align="center">
+                                <td >
+                                    <div class="input-group">
+                                        <input class="sector table_value float-end form-control" style="text-align:right " list="dictionarySector" onchange="addToDictionary(this)" asp-for="@Model.ToList()[el].jornal.Sector" />
+
+                                        <a class="input-group-text d-none ps-0 bg-success" style="width:20px; height:30px" title="Добавить участок в словарь"
+                                           onclick="return ShowWindowConfirm('Внимание, несохраненные данные будут удалены. Продолжить?')"><img src="~/img/info.svg" /></a>
+
+                                      
+                                        <input type="button" title="Удалить участок" value="" style="width:35px; height:30px; background-image: url('../img/x-circle-fill.svg'); background-repeat: no-repeat; background-position:center"
+                                               class="input-group-text float-end" data-bs-toggle="modal" data-bs-target="#ModalDelete"
+                                         data-bs-ID="@Model.ToList()[el].jornal.NumberRecordingID" data-bs-Sector="@Model.ToList()[el].jornal.Sector" />
+                                    </div>
+                                </td>
+
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanArray.Sum(),3)</td>
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactArray.Sum(),3)</td>
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanArray.Skip(a).Take(3).Sum(),3)</td>
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactArray.Skip(a).Take(3).Sum(),3)</td>
+                                @for (int n = a; n < b; n++)
+                                {
+                                    <td>@GroupjornalByFact.ToList()[i].ToList()[y].PlanArray[n]</td>
+                                    <td align="center" class="table_value"><input class="w-100" style="text-align:center" onfocus='this.select()' asp-for="@Model.ToList()[el].FactArray[n]" /></td>
+                                }
+
+                                <td align="center" class="table_value">
+                                    <textarea class="autoGrow w-100" style="text-align:center" oninput="auto_grow(this)" asp-for="@Model.ToList()[el].jornal.Note">@Model.ToList()[el].jornal.Note</textarea>
+                                    <input type="hidden" asp-for="@Model.ToList()[el].jornal.NumberRecordingID" />
+                                    <input type="hidden" asp-for="@Model.ToList()[el].nameOfWorks.IntegerValue" />
+
+                                    @for (int n = 0; n < 12; n++)
+                                    {
+                                        if (n >= a && n < b) continue;
+                                        <input type="hidden" asp-for="@Model.ToList()[el].FactArray[n]" />
+                                    }
+                                </td>
+                                <td align="center" class="table_value width_10">
+                                   
+                                    @{
+                                        foreach(var item in Model.ToList()[el].jornal.ActOfWorks)
+                                        {
+                                            <button type="button" title="Просмотреть или открепить акт выполненных работ" class="dropdown d-print-none text-dark text-nowrap fw-normal bg-light ms-1 mt-1 px-1 border-1 border-secondary border" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    @item.NumberAct                                                   
+                                            </button>
+
+                                            <ul class="dropdown-menu border-0 text-decoration-none text-dark align-content-center" style="text-align:center">
+                                                <li class="dropdown-item">
+                                                    <a asp-action="ViewCardAct" title="Просмотреть акт выполненных работ" asp-controller="Act" asp-route-ActID="@item.IDAct" class="text-decoration-none text-dark">
+                                                       Просмотреть
+                                                    </a>
+                                                </li>
+
+                                                <li class="dropdown-item">
+                                                    <a asp-action="UnpinCardAct" title="Открепить акт выполенных работ от текущей работы" asp-controller="Act" asp-route-ActID="@item.IDAct" asp-route-RecordID="@Model.ToList()[el].jornal.NumberRecordingID" asp-route-OtherRecordID="0" class="text-decoration-none text-dark">
+                                                        Открепить
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        }
+                                    }
+
+                                 </td>
+                                <td>
+                                    <div class="float-end dropstart d-print-none" style="z-index:1020">
+                                        <button type="button" title="Добавить акт выполненных работ" class=" border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <img class="align-middle" src="~/img/file-earmark-plus-fill.svg">
+                                        </button>
+                                        <ul class="dropdown-menu border-0" style="overflow-y:scroll; max-height:80vh">
+                                            <li class="dropdown-item">
+                                                <input class="border-0 bg-transparent" type="submit" value="Создать новый акт" asp-action="CreateCardAct" asp-controller="Jornal" asp-route-departmentID="@Model.ToList()[el].jornal.DepartmentID"
+                                                       asp-route-recordID="@Model.ToList()[el].jornal.NumberRecordingID" asp-route-YearID="@Model.ToList()[el].jornal.YearID" asp-route-currentBlock="@ViewBag.Menu[1]" />
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            @{
+                                                foreach (var item in ViewBag.AllActForDepartment)
+                                                {
+                                                        <li class="dropdown-item text-center">
+                                                            <input class="border-0 bg-transparent" type="submit" value="@item.NumberAct" asp-action="AddActToJornalRecord" asp-controller="Jornal" asp-route-actID="@item.IDAct" asp-route-recordID="@Model.ToList()[el].jornal.NumberRecordingID" />
+                                                        </li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        }
+                    }
+                }
+                continue;
+            }
+
+            //Вывод наименований работ с участками и параметрами
+            if (GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.TypeRecords == "с участками и параметрами")
+            {
+
+                //суммирующая строка, без добавленных участков
+                if (GroupjornalByFact.ToList()[i].ToList()[0].FactArray == null)
+                {
+                    int el = 0;
+                    for (int g = 0; g < Model.ToList().Count; g++)
+                    {
+                        if (Model.ToList()[g].nameOfWorks.WorkID == GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.WorkID)
+                        {
+                            el = g;
+                            break;
+                        }
+                    }
+                    <tr align="center" class="fw-bold">
+                        <td align="left" title="@ShowSpecification(GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Discription,
+                            GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Periodicity,
+                            GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Unit)">
+                            @GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.NameOfWork
+                            <input type="submit" value="" style="width:25px; background-image: url('../img/plus-circle-fill.svg'); background-repeat: no-repeat;" title="Добавить участок" class="float-end border-0 bg-transparent" asp-controller="Jornal" asp-action="AddRecordToJornal" asp-route-Department="@ViewBag.Menu[4]" asp-route-Year="@ViewBag.Menu[3]" asp-route-WorkID="@GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.WorkID" />
+                        </td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td><input type="hidden" asp-for="@Model.ToList()[el].nameOfWorks.WorkID" /></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                }
+
+                //суммирующая строка, с добавленными участками
+                else
+                {
+                    <tr align="center" class="fw-bold">
+                        <td align="left" title="@ShowSpecification(GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Discription,
+                            GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Periodicity,
+                            GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Unit)">
+                            <input type="submit" value="" style="width:25px; background-image: url('../img/plus-circle-fill.svg'); background-repeat: no-repeat;" title="Добавить участок" class="float-end border-0 bg-transparent" asp-controller="Jornal" asp-action="AddRecordToJornal" asp-route-Department="@ViewBag.Menu[4]" asp-route-Year="@ViewBag.Menu[3]" asp-route-WorkID="@GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.WorkID" />
+                            @GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.NameOfWork
+                        </td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanArray.Sum()),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactArray.Sum()),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanArray.Skip(a).Take(3).Sum()),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactArray.Skip(a).Take(3).Sum()),3)</td>
+                        @for (int n = a; n < b; n++)
+                        {
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanArray[n]),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactArray[n]),3)</td>
+                        }
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                    //суммирующая строка для 1 параметра
+                    if (GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_1 != null)
+                    {
+                        <tr align="center" class="fw-bold">
+                            <td><div class="float-lg-end mx-3 pe-4"> @GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_1</div></td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_1.Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_1.Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_1.Skip(a).Take(3).Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_1.Skip(a).Take(3).Sum()),3)</td>
+                            @for (int n = a; n < b; n++)
+                            {
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_1[n]),3)</td>
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_1[n]),3)</td>
+                            }
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+
+                    //суммирующая строка для 2 параметра
+                    if (GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_2 != null)
+                    {
+                        <tr align="center" class="fw-bold">
+                            <td>
+                                <div class="float-lg-end mx-3 pe-4"> @GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_2</div>
+                            </td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_2.Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_2.Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_2.Skip(a).Take(3).Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_2.Skip(a).Take(3).Sum()),3)</td>
+                            @for (int n = a; n < b; n++)
+                            {
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_2[n]),3)</td>
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_2[n]),3)</td>
+                            }
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+                    //суммирующая строка для 3 параметра
+                    if (GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_3 != null)
+                    {
+                        <tr align="center" class="fw-bold">
+                            <td>
+                                <div class="float-lg-end mx-3 pe-4"> @GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_3</div>
+                            </td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_3.Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_3.Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_3.Skip(a).Take(3).Sum()),3)</td>
+                            <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_3.Skip(a).Take(3).Sum()),3)</td>
+                            @for (int n = a; n < b; n++)
+                            {
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.PlanParameters_3[n]),3)</td>
+                                <td>@Math.Round(GroupjornalByFact.ToList()[i].Sum(x => x.FactParameters_3[n]),3)</td>
+                            }
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    }
+
+                    //вывод участков отдельной строкой
+                    if (GroupjornalByFact.ToList()[i].ToList()[0].jornal != null)
+                    {
+                        for (int y = 0; y < GroupjornalByFact.ToList()[i].ToList().Count; y++)
+                        {
+                            int el = 0;
+                            for (int g = 0; g < Model.ToList().Count; g++)
+                            {
+                                if (Model.ToList()[g].jornal != null)
+                                {
+                                    if (GroupjornalByFact.ToList()[i].ToList()[y].jornal.NumberRecordingID == Model.ToList()[g].jornal.NumberRecordingID)
+                                    {
+                                        el = g;
+                                        break;
+                                    }
+                                }
+                            }
+                            {
+                                <tr align="center">
+                                    <td>
+                                        <div class="input-group">
+                                            <input class="sector autoGrow table_value float-end form-control" style="text-align:right" list="dictionarySector" onchange="addToDictionary(this)" asp-for="@Model.ToList()[el].jornal.Sector"/>
+
+                                            <a class="input-group-text d-none ps-0 bg-success" style="width:20px; height:30px" title="Добавить участок в словарь"
+                                               onclick="return ShowWindowConfirm('Внимание, несохраненные данные будут удалены. Продолжить?')"><img src="~/img/info.svg" /></a>
+
+                                            <input type="button" title="Удалить участок" value="" style="width:35px; height:30px; background-image: url('../img/x-circle-fill.svg'); background-repeat: no-repeat; background-position:center" class="input-group-text float-end" data-bs-toggle="modal" data-bs-target="#ModalDelete"
+                                                   data-bs-ID="@Model.ToList()[el].jornal.NumberRecordingID" data-bs-Sector="@Model.ToList()[el].jornal.Sector" />
+                                        </div>
+                                    </td>
+                                    <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanArray.Sum(),3)</td>
+                                    <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactArray.Sum(),3)</td>
+                                    <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanArray.Skip(a).Take(3).Sum(),3)</td>
+                                    <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactArray.Skip(a).Take(3).Sum(),3)</td>
+                                    @for (int n = a; n < b; n++)
+                                    {
+                                        <td>@GroupjornalByFact.ToList()[i].ToList()[y].PlanArray[n]</td>
+                                        <td class="table_value" align="center">
+                                            <input class="w-100" style="text-align:center" onfocus='this.select()' asp-for="@Model.ToList()[el].FactArray[n]" />
+                                        </td>
+                                    }
+                                    <td class="table_value" align="center">
+                                        <textarea class="autoGrow w-100" style="text-align:center" oninput="auto_grow(this)" asp-for="@Model.ToList()[el].jornal.Note">@Model.ToList()[el].jornal.Note</textarea>
+                                        <input type="hidden" asp-for="@Model.ToList()[el].jornal.NumberRecordingID" />
+                                        <input type="hidden" asp-for="@Model.ToList()[el].nameOfWorks.IntegerValue" />
+                                        @for (int n = 0; n < 12; n++)
+                                        {
+                                            if (n >= a && n < b) continue;
+                                            <input type="hidden" asp-for="@Model.ToList()[el].FactArray[n]" />
+                                        }
+                                    </td>
+                                    <td align="center" class="table_value width_10">
+
+                                        @{
+                                            foreach (var item in Model.ToList()[el].jornal.ActOfWorks)
+                                            {
+                                                <button type="button" title="Просмотреть или открепить акт выполненных работ" class="dropdown d-print-none text-dark text-nowrap fw-normal bg-light ms-1 mt-1 px-1 border-1 border-secondary border" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    @item.NumberAct
+                                                </button>
+
+                                                <ul class="dropdown-menu border-0 text-decoration-none text-dark align-content-center" style="text-align:center">
+                                                    <li class="dropdown-item">
+                                                        <a asp-action="ViewCardAct" title="Просмотреть акт выполненных работ" asp-controller="Act" asp-route-ActID="@item.IDAct" class="text-decoration-none text-dark">
+                                                            Просмотреть
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="dropdown-item">
+                                                        <a asp-action="UnpinCardAct" title="Открепить акт выполенных работ от текущей работы" asp-controller="Act" asp-route-ActID="@item.IDAct" asp-route-RecordID="@Model.ToList()[el].jornal.NumberRecordingID" asp-route-OtherRecordID="0" class="text-decoration-none text-dark">
+                                                            Открепить
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            }
+                                        }
+
+                                    </td>
+                                    <td>
+                                        <div class="float-end dropstart d-print-none" style="z-index:1020">
+                                            <button type="button" title="Добавить акт выполненных работ" class=" border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <img src="~/img/file-earmark-plus-fill.svg">
+                                            </button>
+                                            <ul class="dropdown-menu border-0" style="overflow-y:scroll; max-height:80vh">
+                                                <li class="dropdown-item">
+                                                    <input class="border-0 bg-transparent" type="submit" value="Создать новый акт" asp-action="CreateCardAct" asp-controller="Jornal" asp-route-departmentID="@Model.ToList()[el].jornal.DepartmentID"
+                                                           asp-route-recordID="@Model.ToList()[el].jornal.NumberRecordingID" asp-route-YearID="@Model.ToList()[el].jornal.YearID" asp-route-currentBlock="@ViewBag.Menu[1]" />
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                @{
+                                                    foreach (var item in ViewBag.AllActForDepartment)
+                                                    {
+                                                                                                                                        <li class="dropdown-item text-center">
+                                                                                                                                            <input class="border-0 bg-transparent" type="submit" value="@item.NumberAct" asp-action="AddActToJornalRecord" asp-controller="Jornal" asp-route-actID="@item.IDAct" asp-route-recordID="@Model.ToList()[el].jornal.NumberRecordingID" />
+                                                                                                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+
+                            //вывод 1 параметра для каждого участка
+                            if (GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_1 != null)
+                            {
+                                {
+                                    <tr align="center">
+                                        <td><div class="float-lg-end mx-3 pe-4">@Model.ToList()[el].nameOfWorks.Parameter_1</div></td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_1.Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactParameters_1.Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_1.Skip(a).Take(3).Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactParameters_1.Skip(a).Take(3).Sum(),3)</td>
+                                        @for (int n = a; n < b; n++)
+                                        {
+                                            <td>@GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_1[n]</td>
+                                            <td align="center" class="table_value"><input class="w-100" style="text-align:center" onfocus='this.select()' asp-for="@Model.ToList()[el].FactParameters_1[n]" /></td>
+                                        }
+
+                                        <td align="center">
+                                            @for (int n = 0; n < 12; n++)
+                                            {
+                                                if (n >= a && n < b) continue;
+                                                <input type="hidden" asp-for="@Model.ToList()[el].FactParameters_1[n]" />
+                                            }
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
+
+                            //вывод 2 параметра для каждого участка
+                            if (GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_2 != null)
+                            {
+                                {
+                                    <tr align="center">
+                                        <td><div class="float-lg-end mx-3 pe-4">@Model.ToList()[el].nameOfWorks.Parameter_2</div></td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_2.Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactParameters_2.Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_2.Skip(a).Take(3).Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactParameters_2.Skip(a).Take(3).Sum(),3)</td>
+                                        @for (int n = a; n < b; n++)
+                                        {
+                                            <td>@GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_2[n]</td>
+                                            <td align="center" class="table_value"><input class="w-100" style="text-align:center" onfocus='this.select()' asp-for="@Model.ToList()[el].FactParameters_2[n]" /></td>
+                                        }
+                                        <td align="center">
+                                            @for (int n = 0; n < 12; n++)
+                                            {
+                                                if (n >= a && n < b) continue;
+                                                <input type="hidden" asp-for="@Model.ToList()[el].FactParameters_2[n]" />
+                                            }
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
+
+                            //вывод 3 параметра для каждого участка
+                            if (GroupjornalByFact.ToList()[i].ToList()[0].nameOfWorks.Parameter_3 != null)
+                            {
+                                {
+                                    <tr align="center">
+                                        <td><div class="float-lg-end mx-3 pe-4">@Model.ToList()[el].nameOfWorks.Parameter_3</div></td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_3.Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactParameters_3.Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_3.Skip(a).Take(3).Sum(),3)</td>
+                                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactParameters_3.Skip(a).Take(3).Sum(),3)</td>
+                                        @for (int n = a; n < b; n++)
+                                        {
+                                            <td>@GroupjornalByFact.ToList()[i].ToList()[y].PlanParameters_3[n]</td>
+                                            <td align="center" class="table_value"><input class="w-100" style="text-align:center" onfocus='this.select()' asp-for="@Model.ToList()[el].FactParameters_3[n]" /></td>
+                                        }
+                                        <td align="center">
+                                            @for (int n = 0; n < 12; n++)
+                                            {
+                                                if (n >= a && n < b) continue;
+                                                <input type="hidden" asp-for="@Model.ToList()[el].FactParameters_3[n]" />
+                                            }
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    }
+                }
+                continue;
+            }
+
+            //Вывод наименований работ без участков
+            for (int y = 0; y < GroupjornalByFact.ToList()[i].ToList().Count; y++)
+            {
+
+                int el = 0;
+                for (int g = 0; g < Model.ToList().Count; g++)
+                {
+                    if (Model.ToList()[g].jornal != null)
+                        if (GroupjornalByFact.ToList()[i].ToList()[y].jornal.NumberRecordingID == Model.ToList()[g].jornal.NumberRecordingID)
+                        {
+                            el = g;
+                            break;
+                        }
+                }
+
+                if (GroupjornalByFact.ToList()[i].ToList()[y].nameOfWorks.TypeRecords == "без участков")
+                {
+                    <tr align="center" class="fw-bold">
+                        <td align="left"
+                            title="@ShowSpecification(@GroupjornalByFact.ToList()[i].ToList()[y].nameOfWorks.Discription,
+                                                      @GroupjornalByFact.ToList()[i].ToList()[y].nameOfWorks.Periodicity,
+                                                      @GroupjornalByFact.ToList()[i].ToList()[y].nameOfWorks.Unit)">
+                            @GroupjornalByFact.ToList()[i].ToList()[y].nameOfWorks.NameOfWork
+                        </td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanArray.Sum(),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactArray.Sum(),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].PlanArray.Skip(a).Take(3).Sum(),3)</td>
+                        <td>@Math.Round(GroupjornalByFact.ToList()[i].ToList()[y].FactArray.Skip(a).Take(3).Sum(),3)</td>
+                        @for (int n = a; n < b; n++)
+                        {
+                            <td>@GroupjornalByFact.ToList()[i].ToList()[y].PlanArray[n]</td>
+                            <td align="center" class="table_value"><input class="w-100" style="text-align:center" onfocus='this.select()' asp-for="@Model.ToList()[el].FactArray[n]" /></td>
+                        }
+
+                        <td align="center" class="table_value_note ">
+
+                            <textarea class="autoGrow w-100" style="text-align:center" oninput="auto_grow(this)" asp-for="@Model.ToList()[el].jornal.Note">@Model.ToList()[el].jornal.Note</textarea>
+                            <input type="hidden" asp-for="@Model.ToList()[el].jornal.NumberRecordingID" />
+                            <input type="hidden" asp-for="@Model.ToList()[el].nameOfWorks.IntegerValue" />
+                            @for (int n = 0; n < 12; n++)
+                            {
+                                if (n >= a && n < b) continue;
+                                <input type="hidden" asp-for="@Model.ToList()[el].FactArray[n]" />
+                            }
+                        </td>
+                        <td align="center" class="table_value width_10">
+                            @{
+                                foreach (var item in Model.ToList()[el].jornal.ActOfWorks)
+                                {
+                                    <button type="button" title="Просмотреть или открепить акт выполненных работ" class="dropdown d-print-none text-dark text-nowrap fw-normal bg-light ms-1 mt-1 px-1 border-1 border-secondary border" data-bs-toggle="dropdown" aria-expanded="false">
+                                        @item.NumberAct
+                                    </button>
+
+                                    <ul class="dropdown-menu border-0 text-decoration-none text-dark align-content-center" style="text-align:center">
+                                        <li class="dropdown-item">
+                                            <a asp-action="ViewCardAct" title="Просмотреть акт выполненных работ" asp-controller="Act" asp-route-ActID="@item.IDAct" class="text-decoration-none text-dark">
+                                                Просмотреть
+                                            </a>
+                                        </li>
+
+                                        <li class="dropdown-item">
+                                            <a asp-action="UnpinCardAct" title="Открепить акт выполенных работ от текущей работы" asp-controller="Act" asp-route-ActID="@item.IDAct" asp-route-RecordID="@Model.ToList()[el].jornal.NumberRecordingID" asp-route-OtherRecordID="0" class="text-decoration-none text-dark">
+                                                Открепить
+                                            </a>
+                                        </li>
+                                    </ul>
+                                }
+                            }
+
+                        </td>
+                        <td>
+                            <div class="float-end dropstart d-print-none" style="z-index:1020">
+                                <button type="button" title="Добавить акт выполненных работ" class=" border-0 bg-transparent" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="~/img/file-earmark-plus-fill.svg">
+                                </button>
+                                <ul class="dropdown-menu border-0" style="overflow-y:scroll; max-height:80vh">
+                                    <li class="dropdown-item">
+                                        <input class="border-0 bg-transparent" type="submit" value="Создать новый акт" asp-action="CreateCardAct" asp-controller="Jornal" asp-route-departmentID="@Model.ToList()[el].jornal.DepartmentID"
+                                               asp-route-recordID="@Model.ToList()[el].jornal.NumberRecordingID" asp-route-YearID="@Model.ToList()[el].jornal.YearID" asp-route-currentBlock="@ViewBag.Menu[1]" />
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    @{
+                                        foreach (var item in ViewBag.AllActForDepartment)
+                                        {
+                                                                                                                            <li class="dropdown-item text-center">
+                                                                                                                                <input class="border-0 bg-transparent" type="submit" value="@item.NumberAct" asp-action="AddActToJornalRecord" asp-controller="Jornal" asp-route-actID="@item.IDAct" asp-route-recordID="@Model.ToList()[el].jornal.NumberRecordingID" />
+                                                                                                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </table>
+
+    <datalist id="dictionarySector">
+        @foreach (var item in ViewBag.DictionarySector)
+        {
+            <option value="@item">@item</option>
+        }
+    </datalist>
+
+    <div class="modal fade" id="ModalDelete" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Внимание</h3>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Удалить" class="btn-dark" asp-controller="Jornal" asp-action="DeleteRecordsFromJornal" />
+                    <button type="button" data-bs-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    
+    
+    function auto_grow(el) {
+        el.style.height = "30px";
+        el.style.height = (el.scrollHeight+2) + "px";
+    }
+
+    let textarea = document.getElementsByClassName('autoGrow'); 
+    for (let el of textarea) {
+        el.style.height = "30px";
+        el.style.height = (el.scrollHeight + 2) + "px";
+    }
+
+    function addToDictionary(elem) {
+        let flag = false;
+        let dictionarySector = document.getElementById('dictionarySector');
+        let link = elem.nextElementSibling;
+
+        let department = document.getElementById('Department');
+        let selectedDepartment = department.options[department.selectedIndex].text;
+               
+        for (let i = 0; i < dictionarySector.options.length; i++) {
+            if (dictionarySector.options[i].text == elem.value) { flag = true; }
+        } 
+
+        if (flag == false && elem.value != '') { 
+            link.classList.remove('d-none');
+            link.setAttribute("href", "../AdminDictionarySector/AddDictionarySectorByJornal?departmentDS=" + selectedDepartment + "&valueDS=" + elem.value);
+         }
+        else { link.classList.add('d-none'); }
+    }
+
+    let sectors = document.getElementsByClassName('sector');
+    for (let el of sectors) {
+        addToDictionary(el);
+    }
+
+</script>

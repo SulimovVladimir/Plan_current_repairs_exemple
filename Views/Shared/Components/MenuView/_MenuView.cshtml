@@ -1,0 +1,113 @@
+﻿@model Plan_current_repairs.Data.VIewModels.MenuModel
+
+<form class="input-group-text mx-2 mb-3">
+    <select class="form-select w-auto me-1" name="Year">
+        @foreach (var Year in Model.Years)
+        {
+            @if (Year.Text == Model.CurrentYear)
+            {
+                <option selected>@Year.Text</option>
+            }
+            else
+            {
+                <option>@Year.Text</option>
+            }
+        }
+    </select>
+
+    @if (!ViewBag.master)
+    {<select class="form-select w-auto me-1" name="Department">
+            @foreach (var Department in Model.Departments)
+            {
+                @if (Department.Text == Model.CurrentDepartment)
+                {
+                    <option selected>@Department.Text</option>
+                }
+                else
+                {
+                    <option>@Department.Text</option>
+                }
+            }
+        </select>
+    }
+
+    <select class="form-select w-auto" name="Section">
+        @foreach (var Section in Model.Sections)
+        {
+            @if (Section.Text == Model.CurrentSection)
+            {
+                <option selected>@Section.Text</option>
+            }
+            else
+            {
+                <option>@Section.Text</option>
+            }
+        }
+    </select>
+
+    <select class="form-select w-auto mx-1" name="Block">
+        @foreach (var Block in Model.Blocks)
+        {
+            @if (Block.Text == Model.CurrentBlock)
+            {
+                <option selected>@Block.Text</option>
+            }
+            else
+            {
+                <option>@Block.Text</option>
+            }
+        }
+    </select>
+
+    <select class="form-select" name="Group" onchange="document.getElementById('button_show').click()">
+        @foreach (var Group in Model.Groups)
+        {
+            @if (Group.Text == Model.CurrentGroup)
+            {
+                <option selected>@Group.Text</option>
+            }
+            else
+            {
+                <option>@Group.Text</option>
+            }
+        }
+        @if (Model.CurrentGroup == "Все группы")
+        {
+            <option class="bg-secondary text-white" selected>Все группы</option>
+}
+        else
+        {
+            <option class="bg-secondary text-white">Все группы</option>
+}
+    </select>
+
+    @if (ViewBag.master) {<input style="margin-left: 50px" type="submit" id="button_show" value="просмотр" class="btn btn-dark btn-outline-dark text-white mx-2" asp-controller="View" asp-action="IndexViewMaster" />}
+    else
+    {
+        <input style="margin-left: 50px" type="submit" id="button_show" value="просмотр" class="btn btn-dark btn-outline-dark text-white mx-2" asp-controller="View" asp-action="IndexViewDepartment" />
+    }
+       <button class="btn btn-dark btn-outline-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#additional" aria-expanded="false" aria-controls="additional">
+        <img src="~/img/gear.png" width="21">
+    </button>
+
+    <div class="collapse form-check-inline ms-2" id="additional">
+        <div class="card card-body">
+            <div>
+                <input name="OpenTitle" asp-for="OpenTitle" type="checkbox" onchange="document.getElementById('button_show').click()" />
+                <label class="form-check-label" for="checkBlock">Развернуть описание</label>
+            </div>
+            <div>
+                <input name="CollapseBlock" asp-for="CollapseBlock" type="checkbox" onchange="document.getElementById('button_show').click()" />
+                <label class="form-check-label" for="checkBlock">Свернуть поквартально</label>
+            </div>
+            @{ if (!ViewBag.Master)
+                {<div>
+                        <input name="ShowNullValue" asp-for="ShowNullValue" type="checkbox" onchange="document.getElementById('button_show').click()" />
+                    <label class="form-check-label" for="checkBlock">Подсветить пустые поля</label>
+                </div>};
+                }
+        </div>
+    </div>
+    <br /><br />
+   
+</form>

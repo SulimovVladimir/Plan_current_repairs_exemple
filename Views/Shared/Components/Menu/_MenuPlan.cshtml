@@ -1,0 +1,94 @@
+﻿@model Plan_current_repairs.Data.VIewModels.MenuModel
+
+<form class="input-group-text mx-2 mb-2 py-2">
+        <select class="form-select w-auto" name="Year">
+            @foreach (var Year in Model.Years)
+            {
+                @if (Year.Text == Model.CurrentYear)
+                {
+                    <option selected>@Year.Text</option>
+                }
+                else
+                {
+                    <option>@Year.Text</option>
+                }
+            }
+        </select>
+
+    <select class="form-select w-auto mx-1" name="Department" id="Department">
+            @foreach (var Department in Model.Departments)
+            {
+                @if (Department.Text == Model.CurrentDepartment)
+                {
+                    <option selected>@Department.Text</option>
+                }
+                else
+                {
+                    <option>@Department.Text</option>
+                }
+            }
+        </select>
+
+    <select class="form-select w-auto" name="Section" id="Section" onchange="hidden_block()">
+            @foreach (var Section in Model.Sections)
+            {
+                @if (Section.Text == Model.CurrentSection)
+                {
+                    <option selected>@Section.Text</option>
+                }
+                else
+                {
+                    <option>@Section.Text</option>
+                }
+            }
+        </select>
+
+    <select class="form-select w-auto mx-1" name="Block" id="Block">
+            @foreach (var Block in Model.Blocks)
+            {
+                @if (Block.Text == Model.CurrentBlock)
+                {
+                    <option selected>@Block.Text</option>
+                }
+                else
+                {
+                    <option>@Block.Text</option>
+                }
+            }
+        </select>
+
+    <select class="form-select" name="Group" id="Group" onchange="document.getElementById('button_fill').click()">
+            @foreach (var Group in Model.Groups)
+            {
+                @if (Group.Text == Model.CurrentGroup)
+                {
+                    <option selected>@Group.Text</option>
+                }
+                else
+                {
+                    <option>@Group.Text</option>
+                }
+            }
+        </select>
+
+        @{
+            string path = Context.Request.Path;
+            byte start = (byte)path.LastIndexOf('/');
+            byte end = (path.IndexOf('?') != -1) ? (byte)path.IndexOf('?') : (byte)path.Length;
+            string action = path.Substring(++start, end - start);
+        }
+
+        <input type="submit" id="button_fill" value="перейти к заполнению" class="btn btn-dark btn-outline-dark text-white mx-2" asp-controller="Jornal" asp-action="IndexJornal" />
+        <input type="submit" id="button_save" value="сохранить" class="btn btn-dark btn-outline-dark text-white" asp-controller="Jornal" asp-action="@action" form="My" />
+
+</form>
+
+            <script>
+                if (document.getElementById('Section').value == "План") document.getElementById('Block').hidden = true;
+
+                function hidden_block(){
+                    if (document.getElementById('Section').value == "План") document.getElementById('Block').hidden=true;
+                    else document.getElementById('Block').hidden = false;
+                }
+
+            </script>

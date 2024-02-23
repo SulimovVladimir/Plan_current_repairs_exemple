@@ -1,0 +1,165 @@
+﻿@model Plan_current_repairs.Data.VIewModels.ArchiveAct;
+
+@{
+    ViewBag.Title = "Архив актов выполненных работ";
+    Layout = "_Layout";
+
+    string showBlock (bool flag)
+    {
+        if (flag) return "disabled";
+        else return "";
+    }
+
+    string getDepartment()
+    {
+        if (Model.CurrentDepartment != null) return Model.CurrentDepartment;
+        return "";
+    }
+}
+
+<form class="input-group-text">
+    <select class="form-select me-2" name="year" onchange="document.getElementById('button_fill').click()">
+    @foreach (var Year in Model.Years)
+    {
+        @if (Year.Text == Model.CurrentYear)
+        {
+            <option selected>@Year.Text</option>
+        }
+        else
+        {
+            <option>@Year.Text</option>
+        }
+    }
+</select>
+
+    <select class="form-select ms-2" name="department" onchange="document.getElementById('button_fill').click()">
+    @{if(Model.CurrentDepartment==null) {<option selected>Выберите подразделение</option>}}
+    @foreach (var Department in Model.Departments)
+    {
+        @if (Department.Text == Model.CurrentDepartment)
+        {
+            <option selected>@Department.Text</option>
+        }
+        else
+        {
+            <option>@Department.Text</option>
+        }
+    }
+</select>
+
+    @{
+        if (Context.User.Identity.IsAuthenticated && (Context.User.HasClaim("Department", getDepartment())) | Context.User.HasClaim("Role", "Admin") | Context.User.HasClaim("ReviewerRole", "EngineerOfPTO"))
+        {
+            <input type="button" value="Добавить акт" class="form-control w-auto ms-3 border-1 border-dark" style="background-color:#f1f1f1;" data-bs-toggle="modal" data-bs-target="#ModalAddAct" />
+            <div class="modal" id="ModalAddAct" tabindex="-1">
+                <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title text-center">Выберите нужный квартал</h3>
+                </div>
+                     <div class="modal-body text-start">
+                    <p><input name="currentBlock" @showBlock(ViewBag.NotBlockingBlock[1]) type="radio" value="1-й квартал"> 1 квартал</p>
+                    <p><input name="currentBlock" @showBlock(ViewBag.NotBlockingBlock[2]) type="radio" value="2-й квартал"> 2 квартал</p>
+                    <p><input name="currentBlock" @showBlock(ViewBag.NotBlockingBlock[3]) type="radio" value="3-й квартал"> 3 квартал</p>
+                    <p><input name="currentBlock" @showBlock(ViewBag.NotBlockingBlock[4]) type="radio" value="4-й квартал"> 4 квартал</p>
+                    </div>
+                    <div class="modal-footer">
+                    <input type="submit" value="Добавить" asp-controller="Act" asp-action="CreateCardActWithoutJornal" class="btn-dark" />
+                        <button type="button" data-bs-dismiss="modal">Отмена</button>
+                    </div>
+               </div>
+        </div>
+    </div>
+    }
+}
+    <input type="submit" id="button_fill" style="display:none" asp-controller="Act" asp-action="IndexAct" />
+</form>
+
+
+<div class="tab" style="overflow-y:scroll; max-height:83vh">
+    @{
+        bool defaultFlag = true;
+        if(Model.ListAct!=null) foreach(var act in Model.ListAct)
+            {
+                if(defaultFlag && (Model.CurrentAct==act.NumberAct || Model.CurrentAct==null))
+                {
+                    <button class="tablinks" onclick="openAct(event,'@act.IDAct')" id="defaultOpen">@act.NumberAct</button>
+                    defaultFlag = false;
+                }
+                else
+                {
+                    <button class="tablinks" onclick="openAct(event,'@act.IDAct')">@act.NumberAct</button>
+                }
+            }
+    }
+</div>
+
+@{
+    if (Model.ListAct != null)  foreach (var act in Model.ListAct)
+    {
+        <div id="@act.IDAct" class="tabcontent">
+         
+                <p class="text-nowrap text-end pt-3">@act.DateAct.ToShortDateString()</p>
+                <h5 class="text-center py-4 text-uppercase" style="text-indent: 0px">Акт выполненных работ № @act.NumberAct</h5>
+
+                <p class="text-start">Настоящий акт составлен о том, что бригада в составе:</p>
+
+                <table class="table-bordered border-2 w-100 border-dark text-center">
+                    <thead class="fw-bolder"><tr><td class="m-2">Должность</td><td>ФИО</td></tr> </thead>
+
+                    @{
+                        if (act.EmployeeList != null)
+                        {
+                            foreach (var item in act.EmployeeList)
+                            {
+                                <tr><td>@item[1]</td><td>@item[0]</td></tr>
+                            }
+                        }
+
+                    }
+
+                </table>
+
+                <p class="mt-3">выполнила следующий объем работ:</p>
+                <p style="text-align: justify">@act.TitleWork</p>
+
+                <p class="mt-5">Ответственный за выполнение работ:</p>
+                <div class="input-group text-decoration-underline">
+                    <div class="align-content-center">@act.ResponsibleForWork_Post </div> <div class="ps-5"> @act.ResponsibleForWork_Name</div>
+
+                </div>
+                <div class="d-print-none text-end mt-5 mb-5" style="text-indent :0px">
+                    @{
+                        if (Context.User.Identity.IsAuthenticated && ((!act.IsCloseEditAndRemove && Context.User.HasClaim("Department", act.Department.NameDepartment)) | Context.User.HasClaim("Role", "Admin") | Context.User.HasClaim("ReviewerRole", "EngineerOfPTO")))
+                        {
+                            <a class="btn btn-outline-dark bg-dark text-white" asp-action="EditCardAct" asp-controller="Act" asp-route-ActID="@act.IDAct" asp-route-isArchive="true">Редактировать</a>
+                            <a class="btn btn-outline-dark bg-dark text-white ms-2" asp-action="DeleteCardAct" asp-controller="Act" asp-route-ActID="@act.IDAct"
+                               onclick="return ShowWindowConfirm('Вы точно хотите удалить акт выполненных работ @act.NumberAct?')">Удалить</a>
+                        }
+                        
+                    }
+                    
+                </div>  
+        </div>
+    }
+
+}
+
+<script>
+    function openAct(evt, ActId) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(ActId).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+</script>
